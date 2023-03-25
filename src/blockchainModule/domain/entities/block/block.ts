@@ -1,11 +1,10 @@
-import { SHA256 } from 'crypto-js';
-
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
 
 export const blockInputSchema = Schema.object({
   index: Schema.number(),
+  hash: Schema.string(),
   previousHash: Schema.string(),
   timestamp: Schema.number(),
   data: Schema.string(),
@@ -21,16 +20,12 @@ export class Block {
   public readonly data: string;
 
   public constructor(input: BlockInput) {
-    const { index, previousHash, timestamp, data } = Validator.validate(blockInputSchema, input);
+    const { index, hash, previousHash, timestamp, data } = Validator.validate(blockInputSchema, input);
 
     this.index = index;
-    this.hash = this.calculateHash();
+    this.hash = hash;
     this.previousHash = previousHash;
     this.timestamp = timestamp;
     this.data = data;
-  }
-
-  private calculateHash(): string {
-    return SHA256(String(this.index) + this.previousHash + String(this.timestamp) + this.data).toString();
   }
 }
