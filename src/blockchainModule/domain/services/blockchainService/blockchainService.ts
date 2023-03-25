@@ -1,31 +1,30 @@
 import { Block } from '../../entities/block/block.js';
-import { Blockchain } from '../../entities/blockchain/blockchain.js';
-import { IndexNotMatchingIncrementedIndexFromLastBlockInBlockchainError } from '../../errors/indexNotMatchingIncrementedIndexFromLastBlockInBlockchainError.js';
-import { PreviousHashNotMatchingHashFromLastBlockInBlockchainError } from '../../errors/previousHashNotMatchingHashFromLastBlockInBlockchainError.js';
 import { BlockService } from '../blockService/blockService.js';
 
 export class BlockchainService {
   public constructor(private readonly blockService: BlockService) {}
 
-  public validateNewBlock(blockchain: Blockchain, newBlock: Block): void {
-    const lastBlock = blockchain.getLastBlock();
-
-    if (newBlock.index !== lastBlock.index + 1) {
-      throw new IndexNotMatchingIncrementedIndexFromLastBlockInBlockchainError({
-        index: newBlock.index,
-        lastBlockchainBlockIndex: lastBlock.index,
-      });
+  public checkIfBlocksAreValid(blocks: Block[]): boolean {
+    if (!blocks.length) {
+      return false;
     }
 
-    if (lastBlock.hash !== newBlock.previousHash) {
-      throw new PreviousHashNotMatchingHashFromLastBlockInBlockchainError({
-        previousHash: newBlock.previousHash,
-        lastBlockchainBlockHash: lastBlock.hash,
-      });
+    const firstBlock = blocks[0] as Block;
+
+    if (!this.blockService.checkIfBlockIsGenesisBlock({ block: firstBlock })) {
+      return false;
     }
 
-    this.blockService.checkIfBlockHashIsValid({ block: newBlock });
+    for (let i = 1; i < blocks.length; i++) {
+      if (
+        !this.blockService.checkIfNewBlockIsValid({
+          newBlock: blocks[i] as Block,
+          previousBlock: blocks[i - 1] as Block,
+        })
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
-
-  public checkIfBlockchainIsValid(): boolean {}
 }
