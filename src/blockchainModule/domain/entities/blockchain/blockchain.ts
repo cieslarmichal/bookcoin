@@ -21,13 +21,13 @@ export class Blockchain {
     this.blocks = [genesisBlock];
   }
 
-  public getBlocks(): Block[] {
-    return this.blocks;
+  public getLastBlock(): Block {
+    return this.blocks.at(-1) as Block;
   }
 
-  public addBlock(blockchainService: BlockchainService, block: Block): void {
-    blockchainService.validateNewBlock(block);
+  public addBlock(blockchainService: BlockchainService, newBlock: Block): void {
+    blockchainService.validateNewBlock(this, newBlock);
 
-    this.blocks.push(block);
+    this.blocks.push(newBlock);
   }
 }
