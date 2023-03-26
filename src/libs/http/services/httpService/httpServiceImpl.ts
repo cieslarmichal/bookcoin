@@ -1,13 +1,13 @@
 import { stringify } from 'querystring';
 
-import { HttpService } from './httpService';
-import { HttpServiceConfig } from './httpServiceConfig';
-import { SendRequestPayload, sendRequestPayloadSchema } from './payloads/sendRequestPayload';
-import { LoggerService } from '../../../logger/services/loggerService/loggerService';
-import { Validator } from '../../../validator/validator';
-import { FetchClient } from '../../clients/fetchClient/fetchClient';
-import { HttpServiceError } from '../../errors/httpServiceError';
-import { HttpResponse } from '../../httpResponse';
+import { HttpService } from './httpService.js';
+import { HttpServiceConfig } from './httpServiceConfig.js';
+import { SendRequestPayload, sendRequestPayloadSchema } from './payloads/sendRequestPayload.js';
+import { LoggerService } from '../../../logger/services/loggerService/loggerService.js';
+import { Validator } from '../../../validator/validator.js';
+import { FetchClient } from '../../clients/fetchClient/fetchClient.js';
+import { HttpServiceError } from '../../errors/httpServiceError.js';
+import { HttpResponse } from '../../httpResponse.js';
 
 export class HttpServiceImpl implements HttpService {
   public constructor(

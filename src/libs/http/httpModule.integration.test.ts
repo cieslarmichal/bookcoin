@@ -1,11 +1,9 @@
-import 'reflect-metadata';
-
-import { HttpServiceFactory } from './factories/httpServiceFactory/httpServiceFactory';
-import { HttpServiceFactoryImpl } from './factories/httpServiceFactory/httpServiceFactoryImpl';
-import { HttpModule } from './httpModule';
-import { httpModuleSymbols } from './httpModuleSymbols';
-import { DependencyInjectionContainer } from '../dependencyInjection/dependencyInjectionContainer';
-import { DependencyInjectionContainerFactory } from '../dependencyInjection/dependencyInjectionContainerFactory';
+import { HttpServiceFactory } from './factories/httpServiceFactory/httpServiceFactory.js';
+import { HttpServiceFactoryImpl } from './factories/httpServiceFactory/httpServiceFactoryImpl.js';
+import { HttpModule } from './httpModule.js';
+import { httpModuleSymbols } from './httpModuleSymbols.js';
+import { DependencyInjectionContainer } from '../dependencyInjection/dependencyInjectionContainer.js';
+import { DependencyInjectionContainerFactory } from '../dependencyInjection/dependencyInjectionContainerFactory.js';
 
 describe('HttpModule', () => {
   let container: DependencyInjectionContainer;

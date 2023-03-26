@@ -1,9 +1,9 @@
-import { Schema } from '../../../validator/schema';
-import { SchemaType } from '../../../validator/schemaType';
-import { headersSchema } from '../../httpHeader';
+import { Schema } from '../../../validator/schema.js';
+import { SchemaType } from '../../../validator/schemaType.js';
+import { headersSchema } from '../../httpHeader.js';
 
 export const httpServiceConfigSchema = Schema.object({
-  baseUrl: Schema.notEmptyString(),
+  baseUrl: Schema.string(),
   headers: headersSchema.optional(),
 });
 

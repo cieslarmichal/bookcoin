@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 
-import { HttpHeader } from '../../../../../common/http/httpHeader';
-import { HttpMediaType } from '../../../../../common/http/httpMediaType';
-import { Validator } from '../../../../validator/validator';
-import { HttpServiceConfig, httpServiceConfigSchema } from '../../../services/httpService/httpServiceConfig';
+import { HttpHeader } from '../../../../../common/http/httpHeader.js';
+import { HttpMediaType } from '../../../../../common/http/httpMediaType.js';
+import { Validator } from '../../../../validator/validator.js';
+import { HttpServiceConfig, httpServiceConfigSchema } from '../../../services/httpService/httpServiceConfig.js';
 
 export class HttpServiceConfigTestFactory {
   public create(input: Partial<HttpServiceConfig> = {}): HttpServiceConfig {

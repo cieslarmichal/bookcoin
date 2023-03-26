@@ -1,6 +1,6 @@
 import { Container, interfaces } from 'inversify';
 
-import { FactoryLike } from './factoryLike';
+import { FactoryLike } from './factoryLike.js';
 
 export class DependencyInjectionContainer {
   private instance: Container;

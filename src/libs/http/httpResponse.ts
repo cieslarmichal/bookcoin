@@ -1,4 +1,4 @@
-import { HttpStatusCode } from '../../common/http/httpStatusCode';
+import { HttpStatusCode } from '../../common/http/httpStatusCode.js';
 
 export interface HttpResponse {
   readonly statusCode: HttpStatusCode;

@@ -29,13 +29,7 @@ export class BlockService {
   };
 
   public createGenesisBlock(): Block {
-    const index = this.genesisBlockInfo.index;
-    const hash = this.genesisBlockInfo.hash;
-    const previousHash = this.genesisBlockInfo.previousHash;
-    const timestamp = this.genesisBlockInfo.timestamp;
-    const data = this.genesisBlockInfo.data;
-
-    return new Block({ index, hash, previousHash, timestamp, data });
+    return new Block(this.genesisBlockInfo);
   }
 
   public checkIfBlockIsGenesisBlock(input: CheckIfBlockIsGenesisBlockPayload): boolean {

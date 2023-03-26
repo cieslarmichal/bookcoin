@@ -1,12 +1,10 @@
-import 'reflect-metadata';
-
-import { LoggerModule } from './loggerModule';
-import { loggerModuleSymbols } from './loggerModuleSymbols';
-import { LoggerService } from './services/loggerService/loggerService';
-import { LoggerServiceImpl } from './services/loggerService/loggerServiceImpl';
-import { LoggerModuleConfigTestFactory } from './tests/factories/loggerModuleConfigTestFactory/loggerModuleConfigTestFactory';
-import { DependencyInjectionContainer } from '../dependencyInjection/dependencyInjectionContainer';
-import { DependencyInjectionContainerFactory } from '../dependencyInjection/dependencyInjectionContainerFactory';
+import { LoggerModule } from './loggerModule.js';
+import { loggerModuleSymbols } from './loggerModuleSymbols.js';
+import { LoggerService } from './services/loggerService/loggerService.js';
+import { LoggerServiceImpl } from './services/loggerService/loggerServiceImpl.js';
+import { LoggerModuleConfigTestFactory } from './tests/factories/loggerModuleConfigTestFactory/loggerModuleConfigTestFactory.js';
+import { DependencyInjectionContainer } from '../dependencyInjection/dependencyInjectionContainer.js';
+import { DependencyInjectionContainerFactory } from '../dependencyInjection/dependencyInjectionContainerFactory.js';
 
 describe('LoggerModule', () => {
   let container: DependencyInjectionContainer;

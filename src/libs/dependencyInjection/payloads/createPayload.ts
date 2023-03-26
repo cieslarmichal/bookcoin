@@ -1,6 +1,6 @@
-import { Schema } from '../../validator/schema';
-import { SchemaType } from '../../validator/schemaType';
-import { DependencyInjectionModule } from '../dependencyInjectionModule';
+import { Schema } from '../../validator/schema.js';
+import { SchemaType } from '../../validator/schemaType.js';
+import { DependencyInjectionModule } from '../dependencyInjectionModule.js';
 
 export const createPayloadSchema = Schema.object({
   modules: Schema.array(Schema.unsafeType<DependencyInjectionModule>()),
