@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { describe, it, beforeAll, expect } from 'vitest';
 
 import { BlockchainModule } from './blockchainModule.js';
@@ -15,7 +17,7 @@ describe('BlockchainModule', () => {
   const loggerModuleConfig = new LoggerModuleConfigTestFactory().create();
 
   beforeAll(async () => {
-    container = await DependencyInjectionContainerFactory.create({
+    container = DependencyInjectionContainerFactory.create({
       modules: [new LoggerModule(loggerModuleConfig), new BlockchainModule()],
     });
   });

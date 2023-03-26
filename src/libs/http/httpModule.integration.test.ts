@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { describe, it, beforeAll, expect } from 'vitest';
 
 import { HttpServiceFactory } from './factories/httpServiceFactory/httpServiceFactory.js';
@@ -11,7 +13,7 @@ describe('HttpModule', () => {
   let container: DependencyInjectionContainer;
 
   beforeAll(async () => {
-    container = await DependencyInjectionContainerFactory.create({
+    container = DependencyInjectionContainerFactory.create({
       modules: [new HttpModule()],
     });
   });
