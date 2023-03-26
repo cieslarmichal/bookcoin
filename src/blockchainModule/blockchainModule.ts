@@ -1,14 +1,13 @@
-export class AuthorModule implements DependencyInjectionModule {
+import { blockchainModuleSymbols } from './blockchainModuleSymbols.js';
+import { BlockchainService } from './domain/services/blockchainService/blockchainService.js';
+import { BlockService } from './domain/services/blockService/blockService.js';
+import { DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
+import { DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
+
+export class BlockchainModule implements DependencyInjectionModule {
   public async declareBindings(container: DependencyInjectionContainer): Promise<void> {
-    container.bindToConstructor<AuthorMapper>(authorModuleSymbols.authorMapper, AuthorMapperImpl);
+    container.bindToConstructor<BlockService>(blockchainModuleSymbols.blockService, BlockService);
 
-    container.bindToConstructor<AuthorRepositoryFactory>(
-      authorModuleSymbols.authorRepositoryFactory,
-      AuthorRepositoryFactoryImpl,
-    );
-
-    container.bindToConstructor<AuthorService>(authorModuleSymbols.authorService, AuthorServiceImpl);
-
-    container.bindToConstructor<AuthorController>(authorModuleSymbols.authorController, AuthorController);
+    container.bindToConstructor<BlockchainService>(blockchainModuleSymbols.blockchainService, BlockchainService);
   }
 }

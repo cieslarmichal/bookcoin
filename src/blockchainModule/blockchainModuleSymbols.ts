@@ -1,6 +1,5 @@
-export const authorModuleSymbols = {
-  authorMapper: Symbol('authorMapper'),
-  authorRepositoryFactory: Symbol('authorRepositoryFactory'),
-  authorService: Symbol('authorService'),
-  authorController: Symbol('authorController'),
+export const blockchainModuleSymbols = {
+  blockchainService: Symbol('blockchainService'),
+  blockService: Symbol('blockService'),
+  blockchainHttpController: Symbol('blockchainHttpController'),
 };
