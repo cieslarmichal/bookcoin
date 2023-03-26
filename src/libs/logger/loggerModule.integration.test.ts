@@ -1,3 +1,5 @@
+import { describe, it, beforeAll, expect } from 'vitest';
+
 import { LoggerModule } from './loggerModule.js';
 import { loggerModuleSymbols } from './loggerModuleSymbols.js';
 import { LoggerService } from './services/loggerService/loggerService.js';

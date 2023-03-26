@@ -9,8 +9,10 @@
     "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.build.json",
     "build:dev": "tsc --build tsconfig.json",
-    "test:unit": "jest --config tests-unit.config.js",
+    "test:unit": "vitest .unit.test.ts --threads false",
     "test:unit:watch": "npm run test:unit -- --watch",
+    "test:integration": "vitest .integration.test.ts --threads false",
+    "test:integration:watch": "npm run test:integration -- --watch",
     "test:clean": "jest --clearCache",
     "lint": "eslint . --ext .ts --cache --max-warnings 0",
     "lint:fix": "npm run lint -- --fix"
@@ -55,7 +57,8 @@
     "ts-loader": "^9.2.6",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.2",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitest": "^0.29.7"
   },
   "volta": {
     "node": "18.11.0"

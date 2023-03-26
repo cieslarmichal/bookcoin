@@ -1,3 +1,5 @@
+import { describe, it, beforeAll, expect } from 'vitest';
+
 import { BlockchainModule } from './blockchainModule.js';
 import { blockchainModuleSymbols } from './blockchainModuleSymbols.js';
 import { BlockchainService } from './domain/services/blockchainService/blockchainService.js';

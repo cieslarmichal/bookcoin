@@ -1,3 +1,5 @@
+import { describe, it, beforeAll, expect } from 'vitest';
+
 import { HttpServiceFactory } from './factories/httpServiceFactory/httpServiceFactory.js';
 import { HttpServiceFactoryImpl } from './factories/httpServiceFactory/httpServiceFactoryImpl.js';
 import { HttpModule } from './httpModule.js';
