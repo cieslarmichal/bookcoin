@@ -77,7 +77,7 @@ export class BlockService {
 
     if (newBlock.index !== previousBlock.index + 1) {
       console.log({
-        message: 'Index does not match incremented index from last block in blockchain',
+        message: 'Index does not match incremented index from last block in blockchain.',
         newBlockIndex: newBlock.index,
         previousBlockIndex: previousBlock.index,
       });
@@ -87,7 +87,7 @@ export class BlockService {
 
     if (previousBlock.hash !== newBlock.previousHash) {
       console.log({
-        message: 'Previous hash does not match hash from last block in blockchain',
+        message: 'Previous hash does not match hash from last block in blockchain.',
         newBlockPreviousHash: newBlock.previousHash,
         previousBlockHash: previousBlock.hash,
       });
@@ -105,6 +105,12 @@ export class BlockService {
 
     const validHash = this.calculateBlockHash({ index, previousHash, timestamp, data });
 
-    return hash !== validHash;
+    if (hash !== validHash) {
+      console.log({ message: 'Hash does not match with calculated one.', hash, validHash });
+
+      return false;
+    }
+
+    return true;
   }
 }

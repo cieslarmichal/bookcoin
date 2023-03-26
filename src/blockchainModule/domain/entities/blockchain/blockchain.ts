@@ -2,6 +2,7 @@ import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
 import { BlockchainService } from '../../services/blockchainService/blockchainService.js';
+import { BlockService } from '../../services/blockService/blockService.js';
 import { Block } from '../block/block.js';
 
 export const blockchainInputSchema = Schema.object({
@@ -11,13 +12,11 @@ export const blockchainInputSchema = Schema.object({
 export type BlockchainInput = SchemaType<typeof blockchainInputSchema>;
 
 export class Blockchain {
-  public readonly genesisBlock: Block;
   private blocks: Block[];
 
   public constructor(input: BlockchainInput) {
     const { genesisBlock } = Validator.validate(blockchainInputSchema, input);
 
-    this.genesisBlock = genesisBlock;
     this.blocks = [genesisBlock];
   }
 
@@ -25,9 +24,29 @@ export class Blockchain {
     return this.blocks.at(-1) as Block;
   }
 
-  public addBlock(blockchainService: BlockchainService, newBlock: Block): void {
-    blockchainService.validateNewBlock(this, newBlock);
+  public addBlock(blockService: BlockService, newBlock: Block): void {
+    const previousBlock = this.getLastBlock();
+
+    const newBlockIsValid = blockService.checkIfNewBlockIsValid({ newBlock, previousBlock });
+
+    if (!newBlockIsValid) {
+      return;
+    }
 
     this.blocks.push(newBlock);
+
+    // TODO: broadcast event
+  }
+
+  public replaceBlocks(blockchainService: BlockchainService, newBlocks: Block[]): void {
+    const newBlocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks });
+
+    const newBlocksAreLongerThanCurrentBlocks = newBlocks.length > this.blocks.length;
+
+    if (newBlocksAreValid && newBlocksAreLongerThanCurrentBlocks) {
+      this.blocks = newBlocks;
+
+      // TODO: broadcast event
+    }
   }
 }

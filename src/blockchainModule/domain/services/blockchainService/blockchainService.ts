@@ -1,10 +1,17 @@
+import {
+  CheckIfBlocksAreValidPayload,
+  checkIfBlocksAreValidPayloadSchema,
+} from './payloads/checkIfBlocksAreValidPayload.js';
+import { Validator } from '../../../../libs/validator/validator.js';
 import { Block } from '../../entities/block/block.js';
 import { BlockService } from '../blockService/blockService.js';
 
 export class BlockchainService {
   public constructor(private readonly blockService: BlockService) {}
 
-  public checkIfBlocksAreValid(blocks: Block[]): boolean {
+  public checkIfBlocksAreValid(input: CheckIfBlocksAreValidPayload): boolean {
+    const { blocks } = Validator.validate(checkIfBlocksAreValidPayloadSchema, input);
+
     if (!blocks.length) {
       return false;
     }
