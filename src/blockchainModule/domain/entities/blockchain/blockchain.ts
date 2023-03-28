@@ -39,7 +39,7 @@ export class Blockchain {
   }
 
   public replaceBlocks(blockchainService: BlockchainService, newBlocks: Block[]): void {
-    const newBlocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks });
+    const newBlocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks: newBlocks });
 
     const newBlocksAreLongerThanCurrentBlocks = newBlocks.length > this.blocks.length;
 
