@@ -1,4 +1,4 @@
-import { Schema } from '../../../../libs/validator/schema.js';
+import { Schema } from '../../../../../libs/validator/schema.js';
 
 export const blockSchema = Schema.object({
   index: Schema.number(),

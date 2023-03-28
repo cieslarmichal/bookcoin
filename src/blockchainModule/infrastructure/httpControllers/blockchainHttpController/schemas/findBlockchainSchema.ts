@@ -1,6 +1,6 @@
 import { blockchainSchema } from './blockchainSchema.js';
-import { Schema } from '../../../../libs/validator/schema.js';
-import { SchemaType } from '../../../../libs/validator/schemaType.js';
+import { Schema } from '../../../../../libs/validator/schema.js';
+import { SchemaType } from '../../../../../libs/validator/schemaType.js';
 
 export const findBlockchainQueryParametersSchema = Schema.object({
   id: Schema.string(),

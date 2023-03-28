@@ -4,14 +4,14 @@ import {
   FindBlockchainResponseOkBody,
   findBlockchainResponseOkBodySchema,
 } from './schemas/findBlockchainSchema.js';
-import { HttpController } from '../../../common/http/httpController.js';
-import { HttpMethodName } from '../../../common/http/httpMethodName.js';
-import { HttpRequest } from '../../../common/http/httpRequest.js';
-import { HttpOkResponse, HttpBadRequestResponse } from '../../../common/http/httpResponse.js';
-import { HttpRoute } from '../../../common/http/httpRoute.js';
-import { HttpStatusCode } from '../../../common/http/httpStatusCode.js';
-import { responseErrorBodySchema, ResponseErrorBody } from '../../../common/http/responseErrorBodySchema.js';
-import { Injectable } from '../../../libs/dependencyInjection/decorators.js';
+import { HttpController } from '../../../../common/http/httpController.js';
+import { HttpMethodName } from '../../../../common/http/httpMethodName.js';
+import { HttpRequest } from '../../../../common/http/httpRequest.js';
+import { HttpOkResponse, HttpBadRequestResponse } from '../../../../common/http/httpResponse.js';
+import { HttpRoute } from '../../../../common/http/httpRoute.js';
+import { HttpStatusCode } from '../../../../common/http/httpStatusCode.js';
+import { responseErrorBodySchema, ResponseErrorBody } from '../../../../common/http/responseErrorBodySchema.js';
+import { Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 
 @Injectable()
 export class BlockchainHttpController implements HttpController {
