@@ -6,6 +6,8 @@ import { BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError } from '../
 import { BlockPreviousHashNotMatchingHashFromPreviousBlockError } from '../../errors/blockPreviousHashNotMatchingHashFromPreviousBlockError.js';
 import { BlocksNotProvidedInBlockchainError } from '../../errors/blocksInBlockchainNotProvidedError.js';
 import { GenesisBlockNotProvidedInBlockchainError } from '../../errors/genesisBlockNotProvidedInBlockchainError.js';
+import { ProvidedBlocksNotLongerThanBlockchainError } from '../../errors/providedBlocksNotLongerThanBlockchainError.js';
+import { GenesisBlockService } from '../../services/genesisBlockService/genesisBlockService.js';
 import { Block } from '../block/block.js';
 
 export const blockchainInputSchema = Schema.object({
@@ -23,17 +25,21 @@ export class Blockchain {
     this.blocks = blocks;
   }
 
-  public getLastBlock(): Block {
-    return this.blocks.at(-1) as Block;
-  }
+  public addBlock(newBlock: Block): void {
+    const previousBlock = this.blocks.at(-1) as Block;
 
-  public addBlock(blockchainService: BlockchainService, newBlock: Block): void {
-    const previousBlock = this.getLastBlock();
+    if (newBlock.index !== previousBlock.index + 1) {
+      throw new BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError({
+        blockIndex: newBlock.index,
+        indexFromPreviousBlock: previousBlock.index,
+      });
+    }
 
-    const newBlockIsValid = blockchainService.checkIfNewBlockIsValid({ newBlock, previousBlock });
-
-    if (!newBlockIsValid) {
-      return;
+    if (newBlock.previousHash !== previousBlock.hash) {
+      throw new BlockPreviousHashNotMatchingHashFromPreviousBlockError({
+        blockPreviousHash: newBlock.previousHash,
+        hashFromPreviousBlock: previousBlock.hash,
+      });
     }
 
     this.blocks.push(newBlock);
@@ -41,54 +47,41 @@ export class Blockchain {
     // TODO: broadcast event
   }
 
-  public replaceBlocks(newBlocks: Block[]): void {
-    const newBlocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks: newBlocks });
-
+  public replaceBlocksWithLongerBlocks(genesisBlockService: GenesisBlockService, newBlocks: Block[]): void {
     const newBlocksAreLongerThanCurrentBlocks = newBlocks.length > this.blocks.length;
 
-    if (newBlocksAreValid && newBlocksAreLongerThanCurrentBlocks) {
-      this.blocks = newBlocks;
-
-      // TODO: broadcast event
-    }
-  }
-
-  public checkIfBlocksAreValid(input: CheckIfNewBlockIsValidPayload): boolean {
-    const { newBlock, previousBlock } = Validator.validate(checkIfNewBlockIsValidPayloadSchema, input);
-
-    if (newBlock.index !== previousBlock.index + 1) {
-      console.log({
-        message: 'Index does not match incremented index from previous block.',
-        newBlockIndex: newBlock.index,
-        previousBlockIndex: previousBlock.index,
+    if (!newBlocksAreLongerThanCurrentBlocks) {
+      throw new ProvidedBlocksNotLongerThanBlockchainError({
+        providedBlocksSize: newBlocks.length,
+        blockchainSize: this.blocks.length,
       });
-
-      return false;
     }
 
-    if (previousBlock.hash !== newBlock.previousHash) {
-      console.log({
-        message: 'Previous hash does not match hash from last block in blockchain.',
-        newBlockPreviousHash: newBlock.previousHash,
-        previousBlockHash: previousBlock.hash,
-      });
+    const sortedNewBlocks = newBlocks.sort((block1, block2) => block1.index - block2.index);
 
-      return false;
-    }
+    Blockchain.validateSortedBlocks(genesisBlockService, sortedNewBlocks);
 
-    return this.blockService.checkIfBlockHashIsValid({ block: newBlock });
+    this.blocks = sortedNewBlocks;
+
+    // TODO: broadcast event
   }
 
   public static createBlockchain(input: CreateBlockchainPayload): Blockchain {
     const { genesisBlockService, blocks } = Validator.validate(createBlockchainSchema, input);
 
+    const sortedBlocks = blocks.sort((block1, block2) => block1.index - block2.index);
+
+    Blockchain.validateSortedBlocks(genesisBlockService, sortedBlocks);
+
+    return new Blockchain({ blocks: sortedBlocks });
+  }
+
+  private static validateSortedBlocks(genesisBlockService: GenesisBlockService, blocks: Block[]): void {
     if (!blocks) {
       throw new BlocksNotProvidedInBlockchainError();
     }
 
-    const sortedBlocks = blocks.sort((block1, block2) => block1.index - block2.index);
-
-    const firstBlock = sortedBlocks[0] as Block;
+    const firstBlock = blocks[0] as Block;
 
     if (!genesisBlockService.checkIfBlockIsGenesisBlock(firstBlock)) {
       throw new GenesisBlockNotProvidedInBlockchainError();
@@ -113,7 +106,5 @@ export class Blockchain {
         });
       }
     }
-
-    return new Blockchain({ blocks });
   }
 }
