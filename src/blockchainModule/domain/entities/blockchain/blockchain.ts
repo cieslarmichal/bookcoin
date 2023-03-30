@@ -2,8 +2,9 @@ import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/crea
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
+import { BlocksNotProvidedInBlockchainError } from '../../errors/blocksInBlockchainNotProvidedError.js';
+import { GenesisBlockNotProvidedInBlockchainError } from '../../errors/genesisBlockNotProvidedInBlockchainError.js';
 import { InvalidBlocksError } from '../../errors/invalidBlocksError.js';
-import { BlockchainService } from '../../services/blockchainService/blockchainService.js';
 import { Block } from '../block/block.js';
 
 export const blockchainInputSchema = Schema.object({
@@ -58,22 +59,10 @@ export class Blockchain {
       return false;
     }
 
-    const firstBlock = blocks[0] as Block;
-
-    if (!this.blockService.checkIfBlockIsGenesisBlock({ block: firstBlock })) {
-      return false;
-    }
-
-    for (let i = 1; i < blocks.length; i++) {
-      if (!this.checkIfNewBlockIsValid({ newBlock: blocks[i] as Block, previousBlock: blocks[i - 1] as Block })) {
-        return false;
-      }
-    }
-
     return true;
   }
 
-  public checkIfNewBlockIsValid(input: CheckIfNewBlockIsValidPayload): boolean {
+  public checkIfBlocksAreValid(input: CheckIfNewBlockIsValidPayload): boolean {
     const { newBlock, previousBlock } = Validator.validate(checkIfNewBlockIsValidPayloadSchema, input);
 
     if (newBlock.index !== previousBlock.index + 1) {
@@ -100,7 +89,25 @@ export class Blockchain {
   }
 
   public static createBlockchain(input: CreateBlockchainPayload): Blockchain {
-    const { blocks } = Validator.validate(createBlockchainSchema, input);
+    const { genesisBlockService, blocks } = Validator.validate(createBlockchainSchema, input);
+
+    if (!blocks) {
+      throw new BlocksNotProvidedInBlockchainError();
+    }
+
+    const sortedBlocks = blocks.sort((block1, block2) => block1.index - block2.index);
+
+    const firstBlock = sortedBlocks[0] as Block;
+
+    if (!genesisBlockService.checkIfBlockIsGenesisBlock(firstBlock)) {
+      throw new GenesisBlockNotProvidedInBlockchainError();
+    }
+
+    for (let i = 1; i < blocks.length; i++) {
+      if (!this.checkIfNewBlockIsValid({ newBlock: blocks[i] as Block, previousBlock: blocks[i - 1] as Block })) {
+        return false;
+      }
+    }
 
     const blocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks });
 

@@ -1,4 +1,4 @@
-import { ApplicationError } from '../../../common/errors/applicationError.js';
+import { DomainError } from '../../../common/errors/domainError.js';
 
 interface Context {
   readonly index: number;
@@ -8,7 +8,7 @@ interface Context {
   readonly data: string;
 }
 
-export class InvalidGenesisBlockError extends ApplicationError<Context> {
+export class InvalidGenesisBlockError extends DomainError<Context> {
   public constructor(context: Context) {
     super('InvalidGenesisBlockError', 'Invalid genesis block.', context);
   }

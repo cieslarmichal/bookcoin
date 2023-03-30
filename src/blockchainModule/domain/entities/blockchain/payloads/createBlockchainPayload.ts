@@ -1,10 +1,10 @@
 import { Schema } from '../../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../../libs/validator/schemaType.js';
-import { BlockchainService } from '../../../services/blockchainService/blockchainService.js';
+import { GenesisBlockService } from '../../../services/genesisBlockService/genesisBlockService.js';
 import { Block } from '../../block/block.js';
 
 export const createBlockchainSchema = Schema.object({
-  blockchainService: Schema.unsafeType<BlockchainService>(),
+  genesisBlockService: Schema.unsafeType<GenesisBlockService>(),
   blocks: Schema.array(Schema.custom<Block>((data) => data instanceof Block)),
 });
 
