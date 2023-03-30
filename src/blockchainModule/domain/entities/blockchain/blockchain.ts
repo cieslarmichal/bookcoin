@@ -2,9 +2,10 @@ import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/crea
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
+import { BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError } from '../../errors/blockIndexNotMatchingIncrementedIndexFromPreviousBlockError.js';
+import { BlockPreviousHashNotMatchingHashFromPreviousBlockError } from '../../errors/blockPreviousHashNotMatchingHashFromPreviousBlockError.js';
 import { BlocksNotProvidedInBlockchainError } from '../../errors/blocksInBlockchainNotProvidedError.js';
 import { GenesisBlockNotProvidedInBlockchainError } from '../../errors/genesisBlockNotProvidedInBlockchainError.js';
-import { InvalidBlocksError } from '../../errors/invalidBlocksError.js';
 import { Block } from '../block/block.js';
 
 export const blockchainInputSchema = Schema.object({
@@ -40,7 +41,7 @@ export class Blockchain {
     // TODO: broadcast event
   }
 
-  public replaceBlocks(blockchainService: BlockchainService, newBlocks: Block[]): void {
+  public replaceBlocks(newBlocks: Block[]): void {
     const newBlocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks: newBlocks });
 
     const newBlocksAreLongerThanCurrentBlocks = newBlocks.length > this.blocks.length;
@@ -50,16 +51,6 @@ export class Blockchain {
 
       // TODO: broadcast event
     }
-  }
-
-  public checkIfBlocksAreValid(input: CheckIfBlocksAreValidPayload): boolean {
-    const { blocks } = Validator.validate(checkIfBlocksAreValidPayloadSchema, input);
-
-    if (!blocks.length) {
-      return false;
-    }
-
-    return true;
   }
 
   public checkIfBlocksAreValid(input: CheckIfNewBlockIsValidPayload): boolean {
@@ -104,15 +95,23 @@ export class Blockchain {
     }
 
     for (let i = 1; i < blocks.length; i++) {
-      if (!this.checkIfNewBlockIsValid({ newBlock: blocks[i] as Block, previousBlock: blocks[i - 1] as Block })) {
-        return false;
+      const currentBlock = blocks[i] as Block;
+
+      const previousBlock = blocks[i - 1] as Block;
+
+      if (currentBlock.index !== previousBlock.index + 1) {
+        throw new BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError({
+          blockIndex: currentBlock.index,
+          indexFromPreviousBlock: previousBlock.index,
+        });
       }
-    }
 
-    const blocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks });
-
-    if (!blocksAreValid) {
-      throw new InvalidBlocksError({ blocks });
+      if (currentBlock.previousHash !== previousBlock.hash) {
+        throw new BlockPreviousHashNotMatchingHashFromPreviousBlockError({
+          blockPreviousHash: currentBlock.previousHash,
+          hashFromPreviousBlock: previousBlock.hash,
+        });
+      }
     }
 
     return new Blockchain({ blocks });
