@@ -1,6 +1,5 @@
 export const blockchainModuleSymbols = {
-  blockchainService: Symbol('blockchainService'),
-  blockService: Symbol('blockService'),
+  genesisBlockService: Symbol('genesisBlockService'),
   blockRepository: Symbol('blockRepository'),
   blockchainHttpController: Symbol('blockchainHttpController'),
 };

@@ -23,7 +23,7 @@ describe('BlockchainModule', () => {
   });
 
   it('declares bindings', async () => {
-    expect(container.get<BlockService>(blockchainModuleSymbols.blockService)).toBeInstanceOf(BlockService);
+    expect(container.get<BlockService>(blockchainModuleSymbols.genesisBlockService)).toBeInstanceOf(BlockService);
 
     expect(container.get<BlockchainService>(blockchainModuleSymbols.blockchainService)).toBeInstanceOf(
       BlockchainService,

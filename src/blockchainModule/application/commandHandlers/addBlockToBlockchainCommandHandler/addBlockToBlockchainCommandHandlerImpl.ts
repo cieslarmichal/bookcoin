@@ -15,7 +15,7 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
   public constructor(
     @Inject(blockchainModuleSymbols.blockRepository)
     private readonly blockRepository: BlockRepository,
-    @Inject(blockchainModuleSymbols.blockService)
+    @Inject(blockchainModuleSymbols.genesisBlockService)
     private readonly blockService: BlockService,
     @Inject(loggerModuleSymbols.loggerService)
     private readonly loggerService: LoggerService,
