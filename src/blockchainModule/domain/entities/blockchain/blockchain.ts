@@ -1,12 +1,13 @@
+import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/createBlockchainPayload.js';
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
+import { InvalidBlocksError } from '../../errors/invalidBlocksError.js';
 import { BlockchainService } from '../../services/blockchainService/blockchainService.js';
-import { BlockService } from '../../services/blockService/blockService.js';
 import { Block } from '../block/block.js';
 
 export const blockchainInputSchema = Schema.object({
-  genesisBlock: Schema.instanceof(Block),
+  blocks: Schema.array(Schema.custom<Block>((data) => data instanceof Block)),
 });
 
 export type BlockchainInput = SchemaType<typeof blockchainInputSchema>;
@@ -14,20 +15,20 @@ export type BlockchainInput = SchemaType<typeof blockchainInputSchema>;
 export class Blockchain {
   private blocks: Block[];
 
-  public constructor(input: BlockchainInput) {
-    const { genesisBlock } = Validator.validate(blockchainInputSchema, input);
+  private constructor(input: BlockchainInput) {
+    const { blocks } = Validator.validate(blockchainInputSchema, input);
 
-    this.blocks = [genesisBlock];
+    this.blocks = blocks;
   }
 
   public getLastBlock(): Block {
     return this.blocks.at(-1) as Block;
   }
 
-  public addBlock(blockService: BlockService, newBlock: Block): void {
+  public addBlock(blockchainService: BlockchainService, newBlock: Block): void {
     const previousBlock = this.getLastBlock();
 
-    const newBlockIsValid = blockService.checkIfNewBlockIsValid({ newBlock, previousBlock });
+    const newBlockIsValid = blockchainService.checkIfNewBlockIsValid({ newBlock, previousBlock });
 
     if (!newBlockIsValid) {
       return;
@@ -48,5 +49,17 @@ export class Blockchain {
 
       // TODO: broadcast event
     }
+  }
+
+  public static createBlockchain(input: CreateBlockchainPayload): Blockchain {
+    const { blockchainService, blocks } = Validator.validate(createBlockchainSchema, input);
+
+    const blocksAreValid = blockchainService.checkIfBlocksAreValid({ blocks });
+
+    if (!blocksAreValid) {
+      throw new InvalidBlocksError({ blocks });
+    }
+
+    return new Blockchain({ blocks });
   }
 }

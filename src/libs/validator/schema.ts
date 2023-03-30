@@ -77,8 +77,8 @@ export class Schema {
     return z.instanceof(ctor);
   }
 
-  public union<T extends [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]]>(types: T): ZodTuple<T> {
-    return z.tuple(types);
+  public static custom<T>(check?: ((data: unknown) => any) | undefined): ZodType<T> {
+    return z.custom<T>(check);
   }
 
   public static function<A extends AnyZodTuple, R extends ZodTypeAny>(args: A, returns: R): ZodFunction<A, R> {

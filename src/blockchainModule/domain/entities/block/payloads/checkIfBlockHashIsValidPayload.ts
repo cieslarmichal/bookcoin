@@ -3,7 +3,7 @@ import { SchemaType } from '../../../../../libs/validator/schemaType.js';
 import { Block } from '../../../entities/block/block.js';
 
 export const checkIfBlockHashIsValidPayloadSchema = Schema.object({
-  block: Schema.instanceof(Block),
+  block: Schema.custom<Block>((data) => data instanceof Block),
 });
 
 export type CheckIfBlockHashIsValidPayload = SchemaType<typeof checkIfBlockHashIsValidPayloadSchema>;
