@@ -4,6 +4,7 @@ import {
 } from './payloads/checkIfBlockIsGenesisBlockPayload.js';
 import { Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { Validator } from '../../../../libs/validator/validator.js';
+import { Block } from '../../entities/block/block.js';
 
 @Injectable()
 export class GenesisBlockService {
@@ -14,6 +15,10 @@ export class GenesisBlockService {
     timestamp: 1465154705,
     data: 'Genesis block',
   };
+
+  public createGenesisBlock(): Block {
+    return Block.createBlock({ genesisBlockService: this, ...this.genesisBlockData });
+  }
 
   public checkIfBlockIsGenesisBlock(input: CheckIfBlockIsGenesisBlockPayload): boolean {
     const { index, hash, previousHash, timestamp, data } = Validator.validate(

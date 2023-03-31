@@ -8,15 +8,16 @@ import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
 import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
-import { BlockService } from '../../../domain/services/blockService/blockService.js';
-import { BlockRepository } from '../../repositories/blockRepository/blockRepository.js';
+import { Block } from '../../../domain/entities/block/block.js';
+import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
+import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
 
 export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockchainCommandHandler {
   public constructor(
-    @Inject(blockchainModuleSymbols.blockRepository)
-    private readonly blockRepository: BlockRepository,
+    @Inject(blockchainModuleSymbols.blockchainRepository)
+    private readonly blockRepository: BlockchainRepository,
     @Inject(blockchainModuleSymbols.genesisBlockService)
-    private readonly blockService: BlockService,
+    private readonly genesisBlockService: GenesisBlockService,
     @Inject(loggerModuleSymbols.loggerService)
     private readonly loggerService: LoggerService,
   ) {}
@@ -24,23 +25,23 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
   public async execute(input: AddBlockToBlockchainCommandHandlerPayload): Promise<void> {
     const { blockData } = Validator.validate(addBlockToBlockchainCommandHandlerPayloadSchema, input);
 
-    const currentBlocks = await this.blockRepository.findBlocks();
+    const blockchain = await this.blockRepository.findBlockchain();
 
-    if (!currentBlocks.length) {
-      this.loggerService.debug({ message: 'Adding genesis block to the blockchain...' });
+    this.loggerService.debug({ message: 'Adding block to the blockchain...', context: { blockData } });
 
-      const genesisBlock = this.blockService.createGenesisBlock();
+    const previousBlock = blockchain.getLastBlock();
 
-      await this.blockRepository.saveBlock({ block: genesisBlock });
-
-      this.loggerService.debug({ message: 'Genesis block added to the blockchain.' });
-    }
-
-    this.loggerService.debug({
-      message: 'Adding block to the blockchain...',
-      context: { blockData, blockchainLenght: currentBlocks.length },
+    const block = Block.createBlock({
+      genesisBlockService: this.genesisBlockService,
+      index: previousBlock.index + 1,
+      previousHash: previousBlock.hash,
+      data: blockData,
     });
 
-    const block = this.blockService.createBlock();
+    blockchain.addBlock(block);
+
+    await this.blockRepository.saveBlockchain({ blockchain });
+
+    this.loggerService.debug({ message: 'Block added to the blockchain.', context: { blockIndex: block.index } });
   }
 }

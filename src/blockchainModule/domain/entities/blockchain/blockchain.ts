@@ -25,8 +25,16 @@ export class Blockchain {
     this.blocks = blocks;
   }
 
+  public getBlocks(): Block[] {
+    return this.blocks;
+  }
+
+  public getLastBlock(): Block {
+    return this.blocks.at(-1) as Block;
+  }
+
   public addBlock(newBlock: Block): void {
-    const previousBlock = this.blocks.at(-1) as Block;
+    const previousBlock = this.getLastBlock();
 
     if (newBlock.index !== previousBlock.index + 1) {
       throw new BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError({
