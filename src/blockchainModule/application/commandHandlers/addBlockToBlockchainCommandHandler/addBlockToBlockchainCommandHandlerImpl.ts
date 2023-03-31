@@ -42,6 +42,6 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
 
     await this.blockRepository.saveBlockchain({ blockchain });
 
-    this.loggerService.debug({ message: 'Block added to the blockchain.', context: { blockIndex: block.index } });
+    this.loggerService.info({ message: 'Block added to the blockchain.', context: { blockIndex: block.index } });
   }
 }
