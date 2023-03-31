@@ -26,13 +26,13 @@ export class Application {
   public static async init(): Promise<void> {
     const server = fastify();
 
-    const httpHost = String(process.env[EnvKey.httpHost]);
-    const httpPort = Number(process.env[EnvKey.httpPort]);
+    const httpServerHost = String(process.env[EnvKey.httpServerHost]);
+    const httpServerPort = Number(process.env[EnvKey.httpServerPort]);
     const peerToPeerPort = Number(process.env[EnvKey.peerToPeerPort]);
 
     console.log({
-      httpHost,
-      httpPort,
+      httpServerHost,
+      httpServerPort,
       peerToPeerPort,
     });
 
@@ -42,32 +42,23 @@ export class Application {
 
     httpRouter.registerAllRoutes();
 
-    app.get('/blocks', (req, res) => {
-      res.send(getBlockchain());
-    });
+    // app.get('/peers', (req, res) => {
+    //   res.send(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
+    // });
 
-    app.post('/mineBlock', (req, res) => {
-      const newBlock: Block = generateNextBlock(req.body.data);
-      res.send(newBlock);
-    });
+    // app.post('/addPeer', (req, res) => {
+    //   connectToPeers(req.body.peer);
+    //   res.send();
+    // });
 
-    app.get('/peers', (req, res) => {
-      res.send(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
-    });
+    // app.listen(httpPort, httpHost, () => {
+    //   console.log('Listening http on port: ' + myHttpPort);
+    // });
 
-    app.post('/addPeer', (req, res) => {
-      connectToPeers(req.body.peer);
-      res.send();
-    });
-
-    app.listen(httpPort, httpHost, () => {
-      console.log('Listening http on port: ' + myHttpPort);
-    });
-
-    await server.listen({ host: httpHost, port: httpPort });
+    await server.listen({ host: httpServerHost, port: httpServerPort });
 
     const loggerService = container.get<LoggerService>(loggerModuleSymbols.loggerService);
 
-    loggerService.log({ message: `Server started.`, context: { port: httpPort, host: httpHost } });
+    loggerService.log({ message: `Server started.`, context: { httpServerHost, httpServerPort } });
   }
 }

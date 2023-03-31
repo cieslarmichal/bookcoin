@@ -6,6 +6,8 @@ import {
   registerControllerRoutesPayloadSchema,
 } from './payloads/registerControllerRoutesPayload.js';
 import { RegisterRoutesPayload, registerRoutesPayloadSchema } from './payloads/registerRoutesPayload.js';
+import { blockchainModuleSymbols } from '../blockchainModule/blockchainModuleSymbols.js';
+import { BlockchainHttpController } from '../blockchainModule/infrastructure/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { ApplicationError } from '../common/errors/applicationError.js';
 import { BaseError } from '../common/errors/baseError.js';
 import { DomainError } from '../common/errors/domainError.js';
@@ -27,9 +29,11 @@ export class HttpRouter {
   }
 
   public registerAllRoutes(): void {
-    const customerHttpController = this.container.get<CustomerHttpController>(customerSymbols.customerHttpController);
+    const blockchainHttpController = this.container.get<BlockchainHttpController>(
+      blockchainModuleSymbols.blockchainHttpController,
+    );
 
-    this.registerControllerRoutes({ controller: customerHttpController });
+    this.registerControllerRoutes({ controller: blockchainHttpController });
   }
 
   private registerControllerRoutes(input: RegisterControllerRoutesPayload): void {

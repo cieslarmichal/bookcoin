@@ -4,8 +4,7 @@ import { describe, it, beforeAll, expect } from 'vitest';
 
 import { BlockchainModule } from './blockchainModule.js';
 import { blockchainModuleSymbols } from './blockchainModuleSymbols.js';
-import { BlockchainService } from './domain/services/blockchainService/blockchainService.js';
-import { BlockService } from './domain/services/blockService/blockService.js';
+import { BlockchainHttpController } from './infrastructure/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { LoggerModule } from '../libs/logger/loggerModule.js';
@@ -23,10 +22,8 @@ describe('BlockchainModule', () => {
   });
 
   it('declares bindings', async () => {
-    expect(container.get<BlockService>(blockchainModuleSymbols.genesisBlockService)).toBeInstanceOf(BlockService);
-
-    expect(container.get<BlockchainService>(blockchainModuleSymbols.blockchainService)).toBeInstanceOf(
-      BlockchainService,
+    expect(container.get<BlockchainHttpController>(blockchainModuleSymbols.blockchainHttpController)).toBeInstanceOf(
+      BlockchainHttpController,
     );
   });
 });

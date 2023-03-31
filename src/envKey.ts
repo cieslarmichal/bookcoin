@@ -1,6 +1,6 @@
 export enum EnvKey {
   logLevel = 'LOG_LEVEL',
-  httpHost = 'HTTP_HOST',
-  httpPort = 'HTTP_PORT',
+  httpServerHost = 'HTTP_SERVER_HOST',
+  httpServerPort = 'HTTP_SERVER_PORT',
   peerToPeerPort = 'PEER_TO_PEER_PORT',
 }

@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "start:dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
     "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.build.json",
     "build:dev": "tsc --build tsconfig.json",
