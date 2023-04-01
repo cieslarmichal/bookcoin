@@ -1,11 +1,11 @@
-import { UniqueId } from '../uniqueId';
+import { UniqueId } from './uniqueId';
 
 export abstract class Entity<T> {
-  protected readonly id: UniqueId;
+  protected readonly uniqueId: UniqueId;
   public readonly properties: T;
 
-  public constructor(properties: T, id?: UniqueId) {
-    this.id = id ? id : new UniqueId();
+  public constructor(properties: T, uniqueId?: UniqueId) {
+    this.uniqueId = uniqueId ? uniqueId : new UniqueId();
     this.properties = properties;
   }
 
@@ -18,6 +18,6 @@ export abstract class Entity<T> {
       return true;
     }
 
-    return this.id.equals(object.id);
+    return this.uniqueId.equals(object.uniqueId);
   }
 }
