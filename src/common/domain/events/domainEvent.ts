@@ -1,9 +1,8 @@
 export abstract class DomainEvent {
-  public readonly name: string;
+  public abstract readonly eventName: string;
   public readonly occurredDate: Date;
 
-  public constructor(name: string, occuredDate: Date) {
-    this.name = name;
+  public constructor(occuredDate: Date) {
     this.occurredDate = occuredDate;
   }
 }

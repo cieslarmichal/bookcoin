@@ -47,7 +47,7 @@ export class DomainEvents {
   private static async dispatchAggregateEvents(aggregate: AggregateRoot<unknown>): Promise<void> {
     await Promise.all(
       aggregate.events.map(async (event) => {
-        const eventHandlers = this.eventToHandlersMapping[event.name];
+        const eventHandlers = this.eventToHandlersMapping[event.eventName];
 
         if (!eventHandlers) {
           return;

@@ -1,4 +1,5 @@
 import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/createBlockchainPayload.js';
+import { AggregateRoot } from '../../../../common/domain/aggregateRoot.js';
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
@@ -16,10 +17,12 @@ export const blockchainInputSchema = Schema.object({
 
 export type BlockchainInput = SchemaType<typeof blockchainInputSchema>;
 
-export class Blockchain {
+export class Blockchain extends AggregateRoot<void> {
   private blocks: Block[];
 
   private constructor(input: BlockchainInput) {
+    super();
+
     const { blocks } = Validator.validate(blockchainInputSchema, input);
 
     this.blocks = blocks;
