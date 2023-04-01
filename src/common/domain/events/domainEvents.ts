@@ -1,8 +1,8 @@
-import { DomainEvent } from './domainEvent';
 import { AggregateRoot } from '../aggregateRoot';
 import { UniqueId } from '../uniqueId';
 
-type RegisterEventCallback = (event: DomainEvent) => Promise<void>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RegisterEventCallback = (event: any) => Promise<void>;
 
 export class DomainEvents {
   private static eventToHandlersMapping: Record<string, RegisterEventCallback[]> = {};
@@ -47,7 +47,7 @@ export class DomainEvents {
   private static async dispatchAggregateEvents(aggregate: AggregateRoot<unknown>): Promise<void> {
     await Promise.all(
       aggregate.events.map(async (event) => {
-        const eventHandlers = this.eventToHandlersMapping[event.eventName];
+        const eventHandlers = this.eventToHandlersMapping[event.name];
 
         if (!eventHandlers) {
           return;

@@ -1,5 +1,6 @@
 import { DomainEvent } from './domainEvent';
 
-export interface DomainEventHandler<Event extends DomainEvent> {
-  onEvent(event: Event): Promise<void>;
+export abstract class DomainEventHandler<Event extends DomainEvent> {
+  public abstract setupSubscriptions(): void;
+  protected abstract onEvent(event: Event): Promise<void>;
 }

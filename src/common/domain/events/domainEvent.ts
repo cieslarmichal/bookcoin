@@ -1,8 +1,8 @@
-export abstract class DomainEvent {
-  public abstract readonly eventName: string;
-  public readonly occurredDate: Date;
+import { UniqueId } from '../uniqueId';
 
-  public constructor(occuredDate: Date) {
-    this.occurredDate = occuredDate;
-  }
+export interface DomainEvent {
+  readonly name: string;
+  readonly occuredDate: Date;
+
+  getAggregateId(): UniqueId;
 }

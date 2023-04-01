@@ -3,5 +3,6 @@ export const blockchainModuleSymbols = {
   blockchainRepository: Symbol('blockchainRepository'),
   addBlockToBlockchainCommandHandler: Symbol('addBlockToBlockchainCommandHandler'),
   findBlocksFromBlockchainQueryHandler: Symbol('findBlocksFromBlockchainQueryHandler'),
+  blockAddedToBlockchainSubscriber: Symbol('blockAddedToBlockchainSubscriber'),
   blockchainHttpController: Symbol('blockchainHttpController'),
 };
