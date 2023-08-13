@@ -1,4 +1,4 @@
-import { SHA256 } from 'crypto-js';
+import crypto from 'crypto-js';
 
 import { CreateBlockPayload, createBlockSchema } from './payloads/createBlockPayload.js';
 import { Schema } from '../../../../libs/validator/schema.js';
@@ -80,7 +80,7 @@ export class Block {
 
     const actualTimestamp = timestamp ?? new Date().getTime() / 1000;
 
-    const validHash = SHA256(String(index) + previousHash + String(timestamp) + data).toString();
+    const validHash = crypto.SHA256(String(index) + previousHash + String(timestamp) + data).toString();
 
     if (hash && hash !== validHash) {
       throw new InvalidBlockHashError({ hash, validHash });

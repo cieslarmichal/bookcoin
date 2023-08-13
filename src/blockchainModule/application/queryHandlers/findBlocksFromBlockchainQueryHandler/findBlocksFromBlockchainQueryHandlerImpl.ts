@@ -3,13 +3,14 @@ import {
   FindBlocksFromBlockchainQueryHandlerResult,
   findBlocksFromBlockchainQueryHandlerResultSchema,
 } from './payloads/findBlocksFromBlockchainQueryHandlerResult.js';
-import { Inject } from '../../../../libs/dependencyInjection/decorators.js';
+import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols.js';
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
 import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
 
+@Injectable()
 export class FindBlocksFromBlockchainQueryHandlerImpl implements FindBlocksFromBlockchainQueryHandler {
   public constructor(
     @Inject(blockchainModuleSymbols.blockchainRepository)

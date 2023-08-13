@@ -3,7 +3,7 @@ import {
   AddBlockToBlockchainCommandHandlerPayload,
   addBlockToBlockchainCommandHandlerPayloadSchema,
 } from './payloads/addBlockToBlockchainCommandHandlerPayload.js';
-import { Inject } from '../../../../libs/dependencyInjection/decorators.js';
+import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols.js';
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
 import { Validator } from '../../../../libs/validator/validator.js';
@@ -12,6 +12,7 @@ import { Block } from '../../../domain/entities/block/block.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
 
+@Injectable()
 export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockchainCommandHandler {
   public constructor(
     @Inject(blockchainModuleSymbols.blockchainRepository)
