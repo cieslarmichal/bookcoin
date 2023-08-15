@@ -114,6 +114,7 @@ export class HttpRouter {
               name: error.name,
               message: error.message,
               context: error.context,
+              stack: error.stack,
             };
 
             this.loggerService.error({

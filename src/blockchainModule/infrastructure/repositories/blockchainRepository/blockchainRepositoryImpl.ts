@@ -19,7 +19,11 @@ export class BlockchainRepositoryImpl implements BlockchainRepository {
     private readonly genesisBlockService: GenesisBlockService,
   ) {}
 
-  public async findBlockchain(): Promise<Blockchain> {
+  public async findBlockchain(): Promise<Blockchain | null> {
+    if (!this.blocks.length) {
+      return null;
+    }
+
     return Blockchain.createBlockchain({ genesisBlockService: this.genesisBlockService, blocks: this.blocks });
   }
 

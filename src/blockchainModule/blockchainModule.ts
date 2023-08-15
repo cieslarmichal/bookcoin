@@ -10,6 +10,8 @@ import { BlockchainHttpController } from './infrastructure/httpControllers/block
 import { BlockchainRepositoryImpl } from './infrastructure/repositories/blockchainRepository/blockchainRepositoryImpl.js';
 import { DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
+import { CreateBlockchainCommandHandler } from './application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
+import { CreateBlockchainCommandHandlerImpl } from './application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandlerImpl.js';
 
 export class BlockchainModule implements DependencyInjectionModule {
   public async declareBindings(container: DependencyInjectionContainer): Promise<void> {
@@ -18,6 +20,11 @@ export class BlockchainModule implements DependencyInjectionModule {
     container.bindToConstructor<BlockchainRepository>(
       blockchainModuleSymbols.blockchainRepository,
       BlockchainRepositoryImpl,
+    );
+
+    container.bindToConstructor<CreateBlockchainCommandHandler>(
+      blockchainModuleSymbols.createBlockchainCommandHandler,
+      CreateBlockchainCommandHandlerImpl,
     );
 
     container.bindToConstructor<AddBlockToBlockchainCommandHandler>(

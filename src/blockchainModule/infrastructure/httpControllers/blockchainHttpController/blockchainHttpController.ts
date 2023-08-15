@@ -19,12 +19,18 @@ import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorat
 import { AddBlockToBlockchainCommandHandler } from '../../../application/commandHandlers/addBlockToBlockchainCommandHandler/addBlockToBlockchainCommandHandler.js';
 import { FindBlocksFromBlockchainQueryHandler } from '../../../application/queryHandlers/findBlocksFromBlockchainQueryHandler/findBlocksFromBlockchainQueryHandler.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
+import {
+  CreateBlockchainResponseCreatedBody,
+  createBlockchainResponseCreatedBodySchema,
+} from './schemas/createBlockchainSchema.js';
 
 @Injectable()
 export class BlockchainHttpController implements HttpController {
-  public readonly basePath = 'blocks';
+  public readonly basePath = 'blockchain';
 
   public constructor(
+    @Inject(blockchainModuleSymbols.createBlockchainCommandHandler)
+    private readonly createBlockchainCommandHandler: CreateBlockchainCommandHandler,
     @Inject(blockchainModuleSymbols.addBlockToBlockchainCommandHandler)
     private readonly addBlockToBlockchainCommandHandler: AddBlockToBlockchainCommandHandler,
     @Inject(blockchainModuleSymbols.findBlocksFromBlockchainQueryHandler)
@@ -35,6 +41,21 @@ export class BlockchainHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
+        handler: this.createBlockchain.bind(this),
+        schema: {
+          response: {
+            [HttpStatusCode.created]: {
+              schema: createBlockchainResponseCreatedBodySchema,
+            },
+            [HttpStatusCode.badRequest]: {
+              schema: responseErrorBodySchema,
+            },
+          },
+        },
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: 'blocks',
         handler: this.addBlockToBlockchain.bind(this),
         schema: {
           request: {
@@ -52,6 +73,7 @@ export class BlockchainHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
+        path: 'blocks',
         handler: this.findBlocksFromBlockchain.bind(this),
         schema: {
           request: {},
@@ -68,10 +90,20 @@ export class BlockchainHttpController implements HttpController {
     ];
   }
 
+  private async createBlockchain(): Promise<
+    HttpOkResponse<CreateBlockchainResponseCreatedBody> | HttpBadRequestResponse<ResponseErrorBody>
+  > {
+    await this.addBlockToBlockchainCommandHandler.execute({ blockData });
+
+    return { statusCode: HttpStatusCode.created, body: { data: { blocks } } };
+  }
+
   private async addBlockToBlockchain(
     request: HttpRequest<AddBlockToBlockchainBody>,
   ): Promise<HttpOkResponse<AddBlockToBlockchainResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>> {
     const { blockData } = request.body;
+
+    console.log({ blockData });
 
     await this.addBlockToBlockchainCommandHandler.execute({ blockData });
 

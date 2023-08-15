@@ -11,6 +11,10 @@ import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { Block } from '../../../domain/entities/block/block.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
+import {
+  AddBlockToBlockchainCommandHandlerResult,
+  addBlockToBlockchainCommandHandlerResultSchema,
+} from './payloads/addBlockToBlockchainCommandHandlerResult.js';
 
 @Injectable()
 export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockchainCommandHandler {
@@ -23,7 +27,9 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async execute(input: AddBlockToBlockchainCommandHandlerPayload): Promise<void> {
+  public async execute(
+    input: AddBlockToBlockchainCommandHandlerPayload,
+  ): Promise<AddBlockToBlockchainCommandHandlerResult> {
     const { blockData } = Validator.validate(addBlockToBlockchainCommandHandlerPayloadSchema, input);
 
     const blockchain = await this.blockRepository.findBlockchain();
@@ -44,5 +50,9 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
     await this.blockRepository.saveBlockchain({ blockchain });
 
     this.loggerService.info({ message: 'Block added to the blockchain.', context: { blockIndex: block.index } });
+
+    const blocks = blockchain.getBlocks();
+
+    return Validator.validate(addBlockToBlockchainCommandHandlerResultSchema, { blocks });
   }
 }

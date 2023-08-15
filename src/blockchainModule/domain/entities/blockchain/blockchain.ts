@@ -88,7 +88,7 @@ export class Blockchain extends AggregateRoot<void> {
   }
 
   private static validateSortedBlocks(genesisBlockService: GenesisBlockService, blocks: Block[]): void {
-    if (!blocks) {
+    if (!blocks.length) {
       throw new BlocksNotProvidedInBlockchainError();
     }
 
