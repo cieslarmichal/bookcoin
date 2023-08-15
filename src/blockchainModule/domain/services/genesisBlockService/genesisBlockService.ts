@@ -4,7 +4,7 @@ import {
 } from './payloads/checkIfBlockIsGenesisBlockPayload.js';
 import { Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { Validator } from '../../../../libs/validator/validator.js';
-import { Block } from '../../entities/block/block.js';
+import { Block } from '../../valueObjects/block/block.js';
 
 @Injectable()
 export class GenesisBlockService {

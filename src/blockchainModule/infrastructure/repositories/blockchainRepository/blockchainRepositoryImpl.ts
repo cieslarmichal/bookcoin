@@ -6,7 +6,7 @@ import {
   saveBlockchainPayloadSchema,
 } from '../../../application/repositories/blockchainRepository/payloads/saveBlockchainPayload.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
-import { Block } from '../../../domain/entities/block/block.js';
+import { Block } from '../../../domain/valueObjects/block/block.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
 

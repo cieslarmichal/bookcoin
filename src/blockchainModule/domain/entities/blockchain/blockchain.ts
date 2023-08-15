@@ -9,7 +9,7 @@ import { BlocksNotProvidedInBlockchainError } from '../../errors/blocksInBlockch
 import { GenesisBlockNotProvidedInBlockchainError } from '../../errors/genesisBlockNotProvidedInBlockchainError.js';
 import { ProvidedBlocksNotLongerThanBlockchainError } from '../../errors/providedBlocksNotLongerThanBlockchainError.js';
 import { GenesisBlockService } from '../../services/genesisBlockService/genesisBlockService.js';
-import { Block } from '../block/block.js';
+import { Block } from '../../valueObjects/block/block.js';
 
 export const blockchainInputSchema = Schema.object({
   blocks: Schema.array(Schema.custom<Block>((data) => data instanceof Block)),

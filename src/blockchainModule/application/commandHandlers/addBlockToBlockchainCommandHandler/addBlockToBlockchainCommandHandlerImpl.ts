@@ -8,7 +8,7 @@ import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
 import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
-import { Block } from '../../../domain/entities/block/block.js';
+import { Block } from '../../../domain/valueObjects/block/block.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
 import {
