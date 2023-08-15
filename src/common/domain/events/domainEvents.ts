@@ -36,11 +36,15 @@ export class DomainEvents {
     const foundAggregate = this.markedAggregates.find((aggregate) => aggregate.id.equals(id));
 
     if (foundAggregate) {
-      this.dispatchAggregateEvents(foundAggregate);
+      console.log(`Dispatching aggregate's events...`, { aggregateId: id });
+
+      await this.dispatchAggregateEvents(foundAggregate);
 
       foundAggregate.clearEvents();
 
       this.removeAggregateFromMarkedAggregates(foundAggregate);
+
+      console.log(`Aggregate's events dispatched.`, { aggregateId: id });
     }
   }
 

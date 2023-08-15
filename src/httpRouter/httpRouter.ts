@@ -147,7 +147,9 @@ export class HttpRouter {
           this.loggerService.error({
             message: 'Caught an unknown error in the HTTP router.',
             context: {
-              error,
+              path: fastifyRequest.url,
+              method,
+              error: error instanceof Error ? { errorName: error.name, errorMessage: error.message } : undefined,
             },
           });
 

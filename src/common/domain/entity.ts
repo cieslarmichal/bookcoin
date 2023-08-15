@@ -1,10 +1,10 @@
 import { UniqueId } from './uniqueId';
 
 export abstract class Entity<T> {
-  protected readonly uniqueId: UniqueId;
+  public readonly id: UniqueId;
 
-  public constructor(uniqueId?: UniqueId) {
-    this.uniqueId = uniqueId ? uniqueId : new UniqueId();
+  public constructor(id?: UniqueId) {
+    this.id = id || new UniqueId();
   }
 
   public equals(object?: Entity<T>): boolean {
@@ -16,6 +16,6 @@ export abstract class Entity<T> {
       return true;
     }
 
-    return this.uniqueId.equals(object.uniqueId);
+    return this.id.equals(object.id);
   }
 }
