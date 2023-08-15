@@ -13,6 +13,7 @@ import { LoggerModule } from './libs/logger/loggerModule.js';
 import { loggerModuleSymbols } from './libs/logger/loggerModuleSymbols.js';
 import { LogLevel } from './libs/logger/logLevel.js';
 import { LoggerService } from './libs/logger/services/loggerService/loggerService.js';
+import { BlockAddedToBlockchainSubscriber } from './blockchainModule/application/subscribers/blockAddedToBlockchainSubscriber/blockAddedToBlockchainSubscriber.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
@@ -58,6 +59,8 @@ export class Application {
     // });
 
     await server.listen({ host: httpServerHost, port: httpServerPort });
+
+    new BlockAddedToBlockchainSubscriber().setupSubscriptions();
 
     const loggerService = container.get<LoggerService>(loggerModuleSymbols.loggerService);
 

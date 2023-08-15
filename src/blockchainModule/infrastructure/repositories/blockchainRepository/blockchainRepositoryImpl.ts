@@ -9,6 +9,7 @@ import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { Block } from '../../../domain/valueObjects/block/block.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
+import { DomainEvents } from '../../../../common/domain/events/domainEvents.js';
 
 @Injectable()
 export class BlockchainRepositoryImpl implements BlockchainRepository {
@@ -29,6 +30,8 @@ export class BlockchainRepositoryImpl implements BlockchainRepository {
 
   public async saveBlockchain(input: SaveBlockchainPayload): Promise<void> {
     const { blockchain } = Validator.validate(saveBlockchainPayloadSchema, input);
+
+    DomainEvents.dispatchEventsForAggregate(blockchain.id);
 
     this.blocks = blockchain.getBlocks();
   }

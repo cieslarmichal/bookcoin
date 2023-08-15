@@ -10,6 +10,8 @@ import { GenesisBlockNotProvidedInBlockchainError } from '../../errors/genesisBl
 import { ProvidedBlocksNotLongerThanBlockchainError } from '../../errors/providedBlocksNotLongerThanBlockchainError.js';
 import { GenesisBlockService } from '../../services/genesisBlockService/genesisBlockService.js';
 import { Block } from '../../valueObjects/block/block.js';
+import { BlockAddedToBlockchainEvent } from '../../events/blockchain/blockAddedToBlockchainEvent.js';
+import { BlocksReplacedInBlockchainEvent } from '../../events/blockchain/blocksReplacedInBlockchainEvent.js';
 
 export const blockchainInputSchema = Schema.object({
   blocks: Schema.array(Schema.custom<Block>((data) => data instanceof Block)),
@@ -32,12 +34,8 @@ export class Blockchain extends AggregateRoot<void> {
     return this.blocks;
   }
 
-  private getLastBlock(): Block {
-    return this.blocks.at(-1) as Block;
-  }
-
   public addBlock(genesisBlockService: GenesisBlockService, blockData: string): void {
-    const previousBlock = this.getLastBlock();
+    const previousBlock = this.blocks.at(-1) as Block;
 
     const newBlock = Block.createBlock({
       genesisBlockService,
@@ -48,7 +46,7 @@ export class Blockchain extends AggregateRoot<void> {
 
     this.blocks.push(newBlock);
 
-    // TODO: broadcast event
+    this.addDomainEvent(new BlockAddedToBlockchainEvent({ blockchain: this }));
   }
 
   public replaceBlocksWithLongerBlocks(genesisBlockService: GenesisBlockService, newBlocks: Block[]): void {
@@ -67,7 +65,7 @@ export class Blockchain extends AggregateRoot<void> {
 
     this.blocks = sortedNewBlocks;
 
-    // TODO: broadcast event
+    this.addDomainEvent(new BlocksReplacedInBlockchainEvent({ blockchain: this }));
   }
 
   public static createBlockchain(input: CreateBlockchainPayload): Blockchain {
