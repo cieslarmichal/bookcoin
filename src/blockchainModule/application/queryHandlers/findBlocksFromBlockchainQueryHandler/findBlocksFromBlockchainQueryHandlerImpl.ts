@@ -9,6 +9,7 @@ import { LoggerService } from '../../../../libs/logger/services/loggerService/lo
 import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
+import { BlockchainNotFoundError } from '../../errors/blockchainNotFoundError.js';
 
 @Injectable()
 export class FindBlocksFromBlockchainQueryHandlerImpl implements FindBlocksFromBlockchainQueryHandler {
@@ -23,6 +24,10 @@ export class FindBlocksFromBlockchainQueryHandlerImpl implements FindBlocksFromB
     this.loggerService.debug({ message: 'Fetching blocks from blockchain...' });
 
     const blockchain = await this.blockRepository.findBlockchain();
+
+    if (!blockchain) {
+      throw new BlockchainNotFoundError();
+    }
 
     const blocks = blockchain.getBlocks();
 

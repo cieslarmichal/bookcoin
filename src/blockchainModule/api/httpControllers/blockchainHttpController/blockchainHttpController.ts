@@ -11,7 +11,7 @@ import {
 import { HttpController } from '../../../../common/http/httpController.js';
 import { HttpMethodName } from '../../../../common/http/httpMethodName.js';
 import { HttpRequest } from '../../../../common/http/httpRequest.js';
-import { HttpOkResponse, HttpBadRequestResponse } from '../../../../common/http/httpResponse.js';
+import { HttpOkResponse, HttpBadRequestResponse, HttpCreatedResponse } from '../../../../common/http/httpResponse.js';
 import { HttpRoute } from '../../../../common/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../common/http/httpStatusCode.js';
 import { responseErrorBodySchema, ResponseErrorBody } from '../../../../common/http/responseErrorBodySchema.js';
@@ -23,6 +23,9 @@ import {
   CreateBlockchainResponseCreatedBody,
   createBlockchainResponseCreatedBodySchema,
 } from './schemas/createBlockchainSchema.js';
+import { CreateBlockchainCommandHandler } from '../../../application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
+import { BlockchainAlreadyExistsError } from '../../../application/errors/blockchainAlreadyExistsError.js';
+import { BlockchainNotFoundError } from '../../../application/errors/blockchainNotFoundError.js';
 
 @Injectable()
 export class BlockchainHttpController implements HttpController {
@@ -43,6 +46,7 @@ export class BlockchainHttpController implements HttpController {
         method: HttpMethodName.post,
         handler: this.createBlockchain.bind(this),
         schema: {
+          request: {},
           response: {
             [HttpStatusCode.created]: {
               schema: createBlockchainResponseCreatedBodySchema,
@@ -91,11 +95,19 @@ export class BlockchainHttpController implements HttpController {
   }
 
   private async createBlockchain(): Promise<
-    HttpOkResponse<CreateBlockchainResponseCreatedBody> | HttpBadRequestResponse<ResponseErrorBody>
+    HttpCreatedResponse<CreateBlockchainResponseCreatedBody> | HttpBadRequestResponse<ResponseErrorBody>
   > {
-    await this.addBlockToBlockchainCommandHandler.execute({ blockData });
+    try {
+      const { blocks } = await this.createBlockchainCommandHandler.execute();
 
-    return { statusCode: HttpStatusCode.created, body: { data: { blocks } } };
+      return { statusCode: HttpStatusCode.created, body: { data: { blocks } } };
+    } catch (error) {
+      if (error instanceof BlockchainAlreadyExistsError) {
+        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
+      }
+
+      throw error;
+    }
   }
 
   private async addBlockToBlockchain(
@@ -105,16 +117,32 @@ export class BlockchainHttpController implements HttpController {
 
     console.log({ blockData });
 
-    await this.addBlockToBlockchainCommandHandler.execute({ blockData });
+    try {
+      const { blocks } = await this.addBlockToBlockchainCommandHandler.execute({ blockData });
 
-    return { statusCode: HttpStatusCode.ok, body: null };
+      return { statusCode: HttpStatusCode.ok, body: { data: { blocks } } };
+    } catch (error) {
+      if (error instanceof BlockchainNotFoundError) {
+        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
+      }
+
+      throw error;
+    }
   }
 
   private async findBlocksFromBlockchain(): Promise<
     HttpOkResponse<FindBlocksFromBlockchainResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>
   > {
-    const { blocks } = await this.findBlocksFromBlockchainQueryHandler.execute();
+    try {
+      const { blocks } = await this.findBlocksFromBlockchainQueryHandler.execute();
 
-    return { statusCode: HttpStatusCode.ok, body: { data: { blocks } } };
+      return { statusCode: HttpStatusCode.ok, body: { data: { blocks } } };
+    } catch (error) {
+      if (error instanceof BlockchainNotFoundError) {
+        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
+      }
+
+      throw error;
+    }
   }
 }

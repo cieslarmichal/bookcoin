@@ -4,7 +4,7 @@ import { describe, it, beforeAll, expect } from 'vitest';
 
 import { BlockchainModule } from './blockchainModule.js';
 import { blockchainModuleSymbols } from './blockchainModuleSymbols.js';
-import { BlockchainHttpController } from './infrastructure/httpControllers/blockchainHttpController/blockchainHttpController.js';
+import { BlockchainHttpController } from './api/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { LoggerModule } from '../libs/logger/loggerModule.js';

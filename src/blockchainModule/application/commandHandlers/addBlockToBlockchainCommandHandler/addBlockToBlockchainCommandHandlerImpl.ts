@@ -15,6 +15,7 @@ import {
   AddBlockToBlockchainCommandHandlerResult,
   addBlockToBlockchainCommandHandlerResultSchema,
 } from './payloads/addBlockToBlockchainCommandHandlerResult.js';
+import { BlockchainNotFoundError } from '../../errors/blockchainNotFoundError.js';
 
 @Injectable()
 export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockchainCommandHandler {
@@ -33,6 +34,10 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
     const { blockData } = Validator.validate(addBlockToBlockchainCommandHandlerPayloadSchema, input);
 
     const blockchain = await this.blockRepository.findBlockchain();
+
+    if (!blockchain) {
+      throw new BlockchainNotFoundError();
+    }
 
     this.loggerService.debug({ message: 'Adding block to the blockchain...', context: { blockData } });
 

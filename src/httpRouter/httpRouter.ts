@@ -7,7 +7,7 @@ import {
 } from './payloads/registerControllerRoutesPayload.js';
 import { RegisterRoutesPayload, registerRoutesPayloadSchema } from './payloads/registerRoutesPayload.js';
 import { blockchainModuleSymbols } from '../blockchainModule/blockchainModuleSymbols.js';
-import { BlockchainHttpController } from '../blockchainModule/infrastructure/httpControllers/blockchainHttpController/blockchainHttpController.js';
+import { BlockchainHttpController } from '../blockchainModule/api/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { ApplicationError } from '../common/errors/applicationError.js';
 import { BaseError } from '../common/errors/baseError.js';
 import { DomainError } from '../common/errors/domainError.js';
@@ -82,12 +82,6 @@ export class HttpRouter {
           }
 
           const { statusCode, body: responseBody } = await handler({ body: requestBody, pathParams, queryParams });
-
-          const responseSchema = schema.response[String(statusCode)]?.schema;
-
-          if (responseSchema) {
-            Validator.validate(responseSchema, queryParams);
-          }
 
           fastifyReply.status(statusCode);
 

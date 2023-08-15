@@ -6,7 +6,7 @@ import { BlockchainRepository } from './application/repositories/blockchainRepos
 import { BlockAddedToBlockchainSubscriber } from './application/subscribers/blockAddedToBlockchainSubscriber/blockAddedToBlockchainSubscriber.js';
 import { blockchainModuleSymbols } from './blockchainModuleSymbols.js';
 import { GenesisBlockService } from './domain/services/genesisBlockService/genesisBlockService.js';
-import { BlockchainHttpController } from './infrastructure/httpControllers/blockchainHttpController/blockchainHttpController.js';
+import { BlockchainHttpController } from './api/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { BlockchainRepositoryImpl } from './infrastructure/repositories/blockchainRepository/blockchainRepositoryImpl.js';
 import { DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
