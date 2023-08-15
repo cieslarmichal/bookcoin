@@ -32,26 +32,19 @@ export class Blockchain extends AggregateRoot<void> {
     return this.blocks;
   }
 
-  public getLastBlock(): Block {
+  private getLastBlock(): Block {
     return this.blocks.at(-1) as Block;
   }
 
-  public addBlock(newBlock: Block): void {
+  public addBlock(genesisBlockService: GenesisBlockService, blockData: string): void {
     const previousBlock = this.getLastBlock();
 
-    if (newBlock.index !== previousBlock.index + 1) {
-      throw new BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError({
-        blockIndex: newBlock.index,
-        indexFromPreviousBlock: previousBlock.index,
-      });
-    }
-
-    if (newBlock.previousHash !== previousBlock.hash) {
-      throw new BlockPreviousHashNotMatchingHashFromPreviousBlockError({
-        blockPreviousHash: newBlock.previousHash,
-        hashFromPreviousBlock: previousBlock.hash,
-      });
-    }
+    const newBlock = Block.createBlock({
+      genesisBlockService,
+      index: previousBlock.index + 1,
+      previousHash: previousBlock.hash,
+      data: blockData,
+    });
 
     this.blocks.push(newBlock);
 

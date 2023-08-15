@@ -41,22 +41,16 @@ export class AddBlockToBlockchainCommandHandlerImpl implements AddBlockToBlockch
 
     this.loggerService.debug({ message: 'Adding block to the blockchain...', context: { blockData } });
 
-    const previousBlock = blockchain.getLastBlock();
-
-    const block = Block.createBlock({
-      genesisBlockService: this.genesisBlockService,
-      index: previousBlock.index + 1,
-      previousHash: previousBlock.hash,
-      data: blockData,
-    });
-
-    blockchain.addBlock(block);
+    blockchain.addBlock(this.genesisBlockService, blockData);
 
     await this.blockRepository.saveBlockchain({ blockchain });
 
-    this.loggerService.info({ message: 'Block added to the blockchain.', context: { blockIndex: block.index } });
-
     const blocks = blockchain.getBlocks();
+
+    this.loggerService.info({
+      message: 'Block added to the blockchain.',
+      context: { blockIndex: (blocks.at(-1) as Block).index },
+    });
 
     return Validator.validate(addBlockToBlockchainCommandHandlerResultSchema, { blocks });
   }
