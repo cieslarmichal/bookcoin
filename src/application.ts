@@ -6,7 +6,6 @@ import { fastify } from 'fastify';
 
 import { BlockchainModule } from './blockchainModule/blockchainModule.js';
 import { EnvKey } from './envKey.js';
-import { HttpRouter } from './httpRouter/httpRouter.js';
 import { DependencyInjectionContainer } from './libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from './libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { LoggerModule } from './libs/logger/loggerModule.js';
@@ -14,6 +13,7 @@ import { loggerModuleSymbols } from './libs/logger/loggerModuleSymbols.js';
 import { LogLevel } from './libs/logger/logLevel.js';
 import { LoggerService } from './libs/logger/services/loggerService/loggerService.js';
 import { BlockAddedToBlockchainSubscriber } from './blockchainModule/application/subscribers/blockAddedToBlockchainSubscriber/blockAddedToBlockchainSubscriber.js';
+import { HttpRouter } from './core/httpRouter/httpRouter.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
@@ -26,7 +26,7 @@ export class Application {
     return container;
   }
 
-  public static async init(): Promise<void> {
+  public static async start(): Promise<void> {
     const server = fastify();
 
     const httpServerHost = String(process.env[EnvKey.httpServerHost]);
