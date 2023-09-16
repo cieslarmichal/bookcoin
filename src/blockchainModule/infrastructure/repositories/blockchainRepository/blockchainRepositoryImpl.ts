@@ -9,7 +9,7 @@ import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { Block } from '../../../domain/valueObjects/block/block.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
-import { DomainEvents } from '../../../../common/domain/events/domainEvents.js';
+import { DomainEvents } from '../../../../common/types/domain/events/domainEvents.js';
 
 @Injectable()
 export class BlockchainRepositoryImpl implements BlockchainRepository {

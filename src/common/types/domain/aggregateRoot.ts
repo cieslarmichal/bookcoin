@@ -1,6 +1,6 @@
-import { Entity } from './entity';
-import { DomainEvent } from './events/domainEvent';
-import { DomainEvents } from './events/domainEvents';
+import { Entity } from './entity.js';
+import { DomainEvent } from './events/domainEvent.js';
+import { DomainEvents } from './events/domainEvents.js';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
   private domainEvents: DomainEvent[] = [];

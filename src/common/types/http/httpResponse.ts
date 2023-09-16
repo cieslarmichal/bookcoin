@@ -1,5 +1,5 @@
+import { Schema } from '../../validation/schema.js';
 import { HttpStatusCode } from './httpStatusCode.js';
-import { Schema } from '../../libs/validator/schema.js';
 
 export const httpResponseSchema = Schema.object({
   statusCode: Schema.enum(HttpStatusCode),

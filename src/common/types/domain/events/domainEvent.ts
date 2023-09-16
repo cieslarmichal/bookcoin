@@ -1,4 +1,4 @@
-import { UniqueId } from '../uniqueId';
+import { UniqueId } from '../uniqueId.js';
 
 export interface DomainEvent {
   readonly name: string;

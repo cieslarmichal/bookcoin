@@ -1,4 +1,4 @@
-import { DomainEvent } from './domainEvent';
+import { DomainEvent } from './domainEvent.js';
 
 export abstract class DomainEventHandler<Event extends DomainEvent> {
   public abstract setupSubscriptions(): void;

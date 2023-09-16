@@ -1,5 +1,5 @@
-import { AggregateRoot } from '../aggregateRoot';
-import { UniqueId } from '../uniqueId';
+import { AggregateRoot } from '../aggregateRoot.js';
+import { UniqueId } from '../uniqueId.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RegisterEventCallback = (event: any) => Promise<void>;

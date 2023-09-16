@@ -1,5 +1,5 @@
 import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/createBlockchainPayload.js';
-import { AggregateRoot } from '../../../../common/domain/aggregateRoot.js';
+import { AggregateRoot } from '../../../../common/types/domain/aggregateRoot.js';
 import { Schema } from '../../../../libs/validator/schema.js';
 import { SchemaType } from '../../../../libs/validator/schemaType.js';
 import { Validator } from '../../../../libs/validator/validator.js';
