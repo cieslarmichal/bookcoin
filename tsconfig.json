@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "baseUrl": "./",
     "resolveJsonModule": true,
     "outDir": "./dist",
@@ -14,6 +14,7 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -28,6 +29,7 @@
     "strict": true,
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "incremental": true,
     "composite": true,
   },

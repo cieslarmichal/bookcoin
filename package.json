@@ -2,7 +2,6 @@
   "name": "bookcoin",
   "version": "1.0.0",
   "author": "Michal Cieslar",
-  "private": true,
   "type": "module",
   "scripts": {
     "start:dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
@@ -34,7 +33,6 @@
     "@types/bunyan": "^1.8.8",
     "@types/crypto-js": "^4.1.1",
     "@types/node": "^20.4.1",
-    "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
@@ -50,7 +48,6 @@
     "prettier": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
-    "supertest": "^6.3.3",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
