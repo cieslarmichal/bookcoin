@@ -1,45 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Schema } from '../../validation/schema.js';
-import { SchemaObject } from '../../validation/schemaObject.js';
-import { SchemaType } from '../../validation/schemaType.js';
+import { ValidationSchema } from '../../validation/validationSchema.js';
+import { ValidationSchemaObject } from '../../validation/validationSchemaObject.js';
+import { ValidationSchemaType } from '../../validation/validationSchemaType.js';
 import { Validator } from '../../validation/validator.js';
 import { HttpMethodName } from './httpMethodName.js';
 import { HttpRequest } from './httpRequest.js';
 import { httpResponseSchema } from './httpResponse.js';
 import { HttpRouteHandler } from './httpRouteHandler.js';
 
-const httpRouteSchemaSchema = Schema.object({
-  request: Schema.object({
-    body: Schema.unsafeType<SchemaObject>().optional(),
-    queryParams: Schema.unsafeType<SchemaObject>().optional(),
-    pathParams: Schema.unsafeType<SchemaObject>().optional(),
+const httpRouteSchemaSchema = ValidationSchema.object({
+  request: ValidationSchema.object({
+    body: ValidationSchema.unsafeType<ValidationSchemaObject>().optional(),
+    queryParams: ValidationSchema.unsafeType<ValidationSchemaObject>().optional(),
+    pathParams: ValidationSchema.unsafeType<ValidationSchemaObject>().optional(),
   }),
-  response: Schema.record(
-    Schema.string(),
-    Schema.object({
-      schema: Schema.union([Schema.unsafeType<SchemaObject>(), Schema.null()]),
+  response: ValidationSchema.record(
+    ValidationSchema.string(),
+    ValidationSchema.object({
+      schema: ValidationSchema.union([ValidationSchema.unsafeType<ValidationSchemaObject>(), ValidationSchema.null()]),
     }),
   ),
 });
 
-const httpRouteInputSchema = Schema.object({
-  method: Schema.enum(HttpMethodName),
-  path: Schema.string().optional(),
-  handler: Schema.function(
-    Schema.tuple([Schema.unsafeType<HttpRequest<any, any, any>>()]),
-    Schema.promise(httpResponseSchema),
+const httpRouteInputSchema = ValidationSchema.object({
+  method: ValidationSchema.enum(HttpMethodName),
+  path: ValidationSchema.string().optional(),
+  handler: ValidationSchema.function(
+    ValidationSchema.tuple([ValidationSchema.unsafeType<HttpRequest<any, any, any>>()]),
+    ValidationSchema.promise(httpResponseSchema),
   ),
   schema: httpRouteSchemaSchema,
 });
 
-export type HttpRouteInput = SchemaType<typeof httpRouteInputSchema>;
+export type HttpRouteInput = ValidationSchemaType<typeof httpRouteInputSchema>;
 
 export class HttpRoute {
   public readonly method: HttpMethodName;
   public readonly path: string;
   public readonly handler: HttpRouteHandler;
-  public readonly schema: SchemaType<typeof httpRouteSchemaSchema>;
+  public readonly schema: ValidationSchemaType<typeof httpRouteSchemaSchema>;
 
   public constructor(input: HttpRouteInput) {
     const { method, path, handler, schema } = Validator.validate(httpRouteInputSchema, input);

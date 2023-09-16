@@ -1,12 +1,12 @@
-import { Schema } from '../../validation/schema.js';
-import { SchemaType } from '../../validation/schemaType.js';
+import { ValidationSchema } from '../../validation/validationSchema.js';
+import { ValidationSchemaType } from '../../validation/validationSchemaType.js';
 
-export const responseErrorBodySchema = Schema.object({
-  error: Schema.object({
-    name: Schema.string(),
-    message: Schema.string(),
-    context: Schema.record(Schema.string(), Schema.any()).optional(),
+export const responseErrorBodySchema = ValidationSchema.object({
+  error: ValidationSchema.object({
+    name: ValidationSchema.string(),
+    message: ValidationSchema.string(),
+    context: ValidationSchema.record(ValidationSchema.string(), ValidationSchema.any()).optional(),
   }),
 });
 
-export type ResponseErrorBody = SchemaType<typeof responseErrorBodySchema>;
+export type ResponseErrorBody = ValidationSchemaType<typeof responseErrorBodySchema>;

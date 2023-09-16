@@ -1,9 +1,12 @@
-import { Schema } from '../../validation/schema.js';
+import { ValidationSchema } from '../../validation/validationSchema.js';
 import { HttpStatusCode } from './httpStatusCode.js';
 
-export const httpResponseSchema = Schema.object({
-  statusCode: Schema.enum(HttpStatusCode),
-  body: Schema.union([Schema.null(), Schema.record(Schema.string(), Schema.any())]),
+export const httpResponseSchema = ValidationSchema.object({
+  statusCode: ValidationSchema.enum(HttpStatusCode),
+  body: ValidationSchema.union([
+    ValidationSchema.null(),
+    ValidationSchema.record(ValidationSchema.string(), ValidationSchema.any()),
+  ]),
 });
 
 export interface HttpResponse<Body = unknown> {

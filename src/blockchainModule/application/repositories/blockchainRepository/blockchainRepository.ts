@@ -1,5 +1,8 @@
-import { SaveBlockchainPayload } from './payloads/saveBlockchainPayload.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
+
+export interface SaveBlockchainPayload {
+  blockchain: Blockchain;
+}
 
 export interface BlockchainRepository {
   findBlockchain(): Promise<Blockchain | null>;

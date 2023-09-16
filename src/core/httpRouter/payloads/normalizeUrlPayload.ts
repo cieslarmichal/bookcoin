@@ -1,8 +1,8 @@
-import { Schema } from '../../../common/validation/schema.js';
-import { SchemaType } from '../../../common/validation/schemaType.js';
+import { ValidationSchema } from '../../../common/validation/validationSchema.js';
+import { ValidationSchemaType } from '../../../common/validation/validationSchemaType.js';
 
-export const normalizeUrlPayloadSchema = Schema.object({
-  url: Schema.string(),
+export const normalizeUrlPayloadSchema = ValidationSchema.object({
+  url: ValidationSchema.string(),
 });
 
-export type NormalizeUrlPayload = SchemaType<typeof normalizeUrlPayloadSchema>;
+export type NormalizeUrlPayload = ValidationSchemaType<typeof normalizeUrlPayloadSchema>;

@@ -1,8 +1,4 @@
-import { CreateBlockchainPayload, createBlockchainSchema } from './payloads/createBlockchainPayload.js';
 import { AggregateRoot } from '../../../../common/types/domain/aggregateRoot.js';
-import { Schema } from '../../../../libs/validator/schema.js';
-import { SchemaType } from '../../../../libs/validator/schemaType.js';
-import { Validator } from '../../../../libs/validator/validator.js';
 import { BlockIndexNotMatchingIncrementedIndexFromPreviousBlockError } from '../../errors/blockIndexNotMatchingIncrementedIndexFromPreviousBlockError.js';
 import { BlockPreviousHashNotMatchingHashFromPreviousBlockError } from '../../errors/blockPreviousHashNotMatchingHashFromPreviousBlockError.js';
 import { BlocksNotProvidedInBlockchainError } from '../../errors/blocksInBlockchainNotProvidedError.js';
@@ -13,19 +9,22 @@ import { Block } from '../../valueObjects/block/block.js';
 import { BlockAddedToBlockchainEvent } from '../../events/blockchain/blockAddedToBlockchainEvent.js';
 import { BlocksReplacedInBlockchainEvent } from '../../events/blockchain/blocksReplacedInBlockchainEvent.js';
 
-export const blockchainInputSchema = Schema.object({
-  blocks: Schema.array(Schema.custom<Block>((data) => data instanceof Block)),
-});
+export interface BlockchainDraft {
+  readonly blocks: Block[];
+}
 
-export type BlockchainInput = SchemaType<typeof blockchainInputSchema>;
+export interface CreateBlockchainPayload {
+  readonly genesisBlockService: GenesisBlockService;
+  readonly blocks: Block[];
+}
 
 export class Blockchain extends AggregateRoot<void> {
   private blocks: Block[];
 
-  private constructor(input: BlockchainInput) {
+  private constructor(draft: BlockchainDraft) {
     super();
 
-    const { blocks } = Validator.validate(blockchainInputSchema, input);
+    const { blocks } = draft;
 
     this.blocks = blocks;
   }
@@ -68,8 +67,8 @@ export class Blockchain extends AggregateRoot<void> {
     this.addDomainEvent(new BlocksReplacedInBlockchainEvent({ blockchain: this }));
   }
 
-  public static createBlockchain(input: CreateBlockchainPayload): Blockchain {
-    const { genesisBlockService, blocks } = Validator.validate(createBlockchainSchema, input);
+  public static createBlockchain(payload: CreateBlockchainPayload): Blockchain {
+    const { genesisBlockService, blocks } = payload;
 
     const sortedBlocks = blocks.sort((block1, block2) => block1.index - block2.index);
 

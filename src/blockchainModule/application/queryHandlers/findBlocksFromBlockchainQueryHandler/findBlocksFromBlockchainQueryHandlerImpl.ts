@@ -1,12 +1,10 @@
-import { FindBlocksFromBlockchainQueryHandler } from './findBlocksFromBlockchainQueryHandler.js';
 import {
+  FindBlocksFromBlockchainQueryHandler,
   FindBlocksFromBlockchainQueryHandlerResult,
-  findBlocksFromBlockchainQueryHandlerResultSchema,
-} from './payloads/findBlocksFromBlockchainQueryHandlerResult.js';
+} from './findBlocksFromBlockchainQueryHandler.js';
 import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols.js';
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
-import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
 import { BlockchainNotFoundError } from '../../errors/blockchainNotFoundError.js';
@@ -33,6 +31,6 @@ export class FindBlocksFromBlockchainQueryHandlerImpl implements FindBlocksFromB
 
     this.loggerService.info({ message: 'Blocks from blockchain fetched.', context: { numberOfBlocks: blocks.length } });
 
-    return Validator.validate(findBlocksFromBlockchainQueryHandlerResultSchema, { blocks });
+    return { blocks };
   }
 }

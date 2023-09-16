@@ -1,17 +1,15 @@
 import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { loggerModuleSymbols } from '../../../../libs/logger/loggerModuleSymbols.js';
 import { LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
-import { Validator } from '../../../../libs/validator/validator.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
 import { GenesisBlockService } from '../../../domain/services/genesisBlockService/genesisBlockService.js';
 import { BlockchainAlreadyExistsError } from '../../errors/blockchainAlreadyExistsError.js';
 import { BlockchainRepository } from '../../repositories/blockchainRepository/blockchainRepository.js';
-import { CreateBlockchainCommandHandler } from './createBlockchainCommandHandler.js';
 import {
+  CreateBlockchainCommandHandler,
   CreateBlockchainCommandHandlerResult,
-  createBlockchainCommandHandlerResultSchema,
-} from './payloads/createBlockchainCommandHandlerResult.js';
+} from './createBlockchainCommandHandler.js';
 
 @Injectable()
 export class CreateBlockchainCommandHandlerImpl implements CreateBlockchainCommandHandler {
@@ -46,6 +44,6 @@ export class CreateBlockchainCommandHandlerImpl implements CreateBlockchainComma
 
     const blocks = blockchain.getBlocks();
 
-    return Validator.validate(createBlockchainCommandHandlerResultSchema, { blocks });
+    return { blocks };
   }
 }

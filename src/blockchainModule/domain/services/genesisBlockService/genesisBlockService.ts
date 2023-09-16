@@ -1,10 +1,13 @@
-import {
-  CheckIfBlockIsGenesisBlockPayload,
-  checkIfBlockIsGenesisBlockPayloadSchema,
-} from './payloads/checkIfBlockIsGenesisBlockPayload.js';
 import { Injectable } from '../../../../libs/dependencyInjection/decorators.js';
-import { Validator } from '../../../../libs/validator/validator.js';
 import { Block } from '../../valueObjects/block/block.js';
+
+export interface CheckIfBlockIsGenesisBlockPayload {
+  readonly index: number;
+  readonly hash: string;
+  readonly previousHash: string;
+  readonly timestamp: number;
+  readonly data: string;
+}
 
 @Injectable()
 export class GenesisBlockService {
@@ -20,11 +23,8 @@ export class GenesisBlockService {
     return Block.createBlock({ genesisBlockService: this, ...this.genesisBlockData });
   }
 
-  public checkIfBlockIsGenesisBlock(input: CheckIfBlockIsGenesisBlockPayload): boolean {
-    const { index, hash, previousHash, timestamp, data } = Validator.validate(
-      checkIfBlockIsGenesisBlockPayloadSchema,
-      input,
-    );
+  public checkIfBlockIsGenesisBlock(payload: CheckIfBlockIsGenesisBlockPayload): boolean {
+    const { index, hash, previousHash, timestamp, data } = payload;
 
     return (
       index === this.genesisBlockData.index &&

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnyZodTuple, z, ZodFunction, ZodTuple, ZodType, ZodTypeAny } from 'zod';
 
-export class Schema {
+export class ValidationSchema {
   public static string(): z.ZodString {
     return z.string();
   }

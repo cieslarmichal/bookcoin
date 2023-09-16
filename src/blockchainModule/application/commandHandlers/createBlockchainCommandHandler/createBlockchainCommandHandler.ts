@@ -1,4 +1,8 @@
 import { CommandHandler } from '../../../../common/types/commandHandler.js';
-import { CreateBlockchainCommandHandlerResult } from './payloads/createBlockchainCommandHandlerResult.js';
+import { Block } from '../../../domain/valueObjects/block/block.js';
+
+export interface CreateBlockchainCommandHandlerResult {
+  readonly blocks: Block[];
+}
 
 export type CreateBlockchainCommandHandler = CommandHandler<void, CreateBlockchainCommandHandlerResult>;

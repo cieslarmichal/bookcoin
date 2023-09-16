@@ -1,23 +1,27 @@
 import crypto from 'crypto-js';
 
-import { CreateBlockPayload, createBlockSchema } from './payloads/createBlockPayload.js';
-import { Schema } from '../../../../libs/validator/schema.js';
-import { SchemaType } from '../../../../libs/validator/schemaType.js';
-import { Validator } from '../../../../libs/validator/validator.js';
 import { InvalidBlockHashError } from '../../errors/invalidBlockHashError.js';
 import { InvalidGenesisBlockError } from '../../errors/invalidGenesisBlockError.js';
 import { InvalidIndexFormatError } from '../../errors/invalidIndexFormatError.js';
 import { PreviousHashNotProvidedError } from '../../errors/previousHashNotProvidedError.js';
+import { GenesisBlockService } from '../../services/genesisBlockService/genesisBlockService.js';
 
-export const blockInputSchema = Schema.object({
-  index: Schema.number(),
-  hash: Schema.string(),
-  previousHash: Schema.string(),
-  timestamp: Schema.number(),
-  data: Schema.string(),
-});
+export interface CreateBlockPayload {
+  readonly genesisBlockService: GenesisBlockService;
+  readonly index: number;
+  readonly hash?: string | undefined;
+  readonly previousHash: string;
+  readonly timestamp?: number | undefined;
+  readonly data: string;
+}
 
-export type BlockInput = SchemaType<typeof blockInputSchema>;
+export interface BlockDraft {
+  readonly index: number;
+  readonly hash: string;
+  readonly previousHash: string;
+  readonly timestamp: number;
+  readonly data: string;
+}
 
 export class Block {
   public readonly index: number;
@@ -26,8 +30,8 @@ export class Block {
   public readonly timestamp: number;
   public readonly data: string;
 
-  private constructor(input: BlockInput) {
-    const { index, hash, previousHash, timestamp, data } = Validator.validate(blockInputSchema, input);
+  private constructor(draft: BlockDraft) {
+    const { index, hash, previousHash, timestamp, data } = draft;
 
     this.index = index;
     this.hash = hash;
@@ -36,11 +40,8 @@ export class Block {
     this.data = data;
   }
 
-  public static createBlock(input: CreateBlockPayload): Block {
-    const { genesisBlockService, index, hash, previousHash, timestamp, data } = Validator.validate(
-      createBlockSchema,
-      input,
-    );
+  public static createBlock(payload: CreateBlockPayload): Block {
+    const { genesisBlockService, index, hash, previousHash, timestamp, data } = payload;
 
     if (index === 0) {
       const blockIsGenesisBlock = genesisBlockService.checkIfBlockIsGenesisBlock({

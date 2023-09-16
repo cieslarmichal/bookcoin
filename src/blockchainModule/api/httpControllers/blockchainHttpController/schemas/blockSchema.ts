@@ -1,9 +1,9 @@
-import { Schema } from '../../../../../libs/validator/schema.js';
+import { ValidationSchema } from '../../../../../common/validation/validationSchema.js';
 
-export const blockSchema = Schema.object({
-  index: Schema.number(),
-  hash: Schema.string(),
-  previousHash: Schema.string(),
-  timestamp: Schema.number(),
-  data: Schema.string(),
+export const blockSchema = ValidationSchema.object({
+  index: ValidationSchema.number(),
+  hash: ValidationSchema.string(),
+  previousHash: ValidationSchema.string(),
+  timestamp: ValidationSchema.number(),
+  data: ValidationSchema.string(),
 });

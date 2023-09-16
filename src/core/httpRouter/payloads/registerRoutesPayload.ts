@@ -1,10 +1,10 @@
 import { HttpRoute } from '../../../common/types/http/httpRoute.js';
-import { Schema } from '../../../common/validation/schema.js';
-import { SchemaType } from '../../../common/validation/schemaType.js';
+import { ValidationSchema } from '../../../common/validation/validationSchema.js';
+import { ValidationSchemaType } from '../../../common/validation/validationSchemaType.js';
 
-export const registerRoutesPayloadSchema = Schema.object({
-  routes: Schema.array(Schema.instanceof(HttpRoute)),
-  basePath: Schema.string(),
+export const registerRoutesPayloadSchema = ValidationSchema.object({
+  routes: ValidationSchema.array(ValidationSchema.instanceof(HttpRoute)),
+  basePath: ValidationSchema.string(),
 });
 
-export type RegisterRoutesPayload = SchemaType<typeof registerRoutesPayloadSchema>;
+export type RegisterRoutesPayload = ValidationSchemaType<typeof registerRoutesPayloadSchema>;

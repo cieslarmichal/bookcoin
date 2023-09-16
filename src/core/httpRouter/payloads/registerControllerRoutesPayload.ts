@@ -1,9 +1,9 @@
 import { HttpController } from '../../../common/types/http/httpController.js';
-import { Schema } from '../../../common/validation/schema.js';
-import { SchemaType } from '../../../common/validation/schemaType.js';
+import { ValidationSchema } from '../../../common/validation/validationSchema.js';
+import { ValidationSchemaType } from '../../../common/validation/validationSchemaType.js';
 
-export const registerControllerRoutesPayloadSchema = Schema.object({
-  controller: Schema.unsafeType<HttpController>(),
+export const registerControllerRoutesPayloadSchema = ValidationSchema.object({
+  controller: ValidationSchema.unsafeType<HttpController>(),
 });
 
-export type RegisterControllerRoutesPayload = SchemaType<typeof registerControllerRoutesPayloadSchema>;
+export type RegisterControllerRoutesPayload = ValidationSchemaType<typeof registerControllerRoutesPayloadSchema>;

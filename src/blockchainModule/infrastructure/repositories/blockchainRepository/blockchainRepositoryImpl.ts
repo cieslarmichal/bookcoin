@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
-import { Validator } from '../../../../libs/validator/validator.js';
-import { BlockchainRepository } from '../../../application/repositories/blockchainRepository/blockchainRepository.js';
 import {
+  BlockchainRepository,
   SaveBlockchainPayload,
-  saveBlockchainPayloadSchema,
-} from '../../../application/repositories/blockchainRepository/payloads/saveBlockchainPayload.js';
+} from '../../../application/repositories/blockchainRepository/blockchainRepository.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
 import { Block } from '../../../domain/valueObjects/block/block.js';
 import { Blockchain } from '../../../domain/entities/blockchain/blockchain.js';
@@ -28,8 +26,8 @@ export class BlockchainRepositoryImpl implements BlockchainRepository {
     return Blockchain.createBlockchain({ genesisBlockService: this.genesisBlockService, blocks: this.blocks });
   }
 
-  public async saveBlockchain(input: SaveBlockchainPayload): Promise<void> {
-    const { blockchain } = Validator.validate(saveBlockchainPayloadSchema, input);
+  public async saveBlockchain(payload: SaveBlockchainPayload): Promise<void> {
+    const { blockchain } = payload;
 
     await DomainEvents.dispatchEventsForAggregate(blockchain.id);
 
