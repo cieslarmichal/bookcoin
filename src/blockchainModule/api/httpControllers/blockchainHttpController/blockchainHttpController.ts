@@ -2,20 +2,13 @@ import {
   AddBlockToBlockchainBody,
   addBlockToBlockchainBodySchema,
   AddBlockToBlockchainResponseOkBody,
-  addBlockToBlockchainResponseOkBodySchema,
 } from './schemas/addBlockToBlockchainSchema.js';
-import {
-  FindBlocksFromBlockchainResponseOkBody,
-  findBlocksFromBlockchainResponseOkBodySchema,
-} from './schemas/findBlocksFromBlockchainSchema.js';
+import { FindBlocksFromBlockchainResponseOkBody } from './schemas/findBlocksFromBlockchainSchema.js';
 import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { AddBlockToBlockchainCommandHandler } from '../../../application/commandHandlers/addBlockToBlockchainCommandHandler/addBlockToBlockchainCommandHandler.js';
 import { FindBlocksFromBlockchainQueryHandler } from '../../../application/queryHandlers/findBlocksFromBlockchainQueryHandler/findBlocksFromBlockchainQueryHandler.js';
 import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
-import {
-  CreateBlockchainResponseCreatedBody,
-  createBlockchainResponseCreatedBodySchema,
-} from './schemas/createBlockchainSchema.js';
+import { CreateBlockchainResponseCreatedBody } from './schemas/createBlockchainSchema.js';
 import { CreateBlockchainCommandHandler } from '../../../application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
 import { BlockchainAlreadyExistsError } from '../../../application/errors/blockchainAlreadyExistsError.js';
 import { BlockchainNotFoundError } from '../../../application/errors/blockchainNotFoundError.js';
@@ -29,7 +22,7 @@ import {
 } from '../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
-import { responseErrorBodySchema, ResponseErrorBody } from '../../../../common/types/http/responseErrorBodySchema.js';
+import { ResponseErrorBody } from '../../../../common/types/http/responseErrorBody.js';
 
 @Injectable()
 export class BlockchainHttpController implements HttpController {
@@ -46,22 +39,15 @@ export class BlockchainHttpController implements HttpController {
 
   public getHttpRoutes(): HttpRoute[] {
     return [
-      new HttpRoute({
+      {
         method: HttpMethodName.post,
+        path: '',
         handler: this.createBlockchain.bind(this),
         schema: {
           request: {},
-          response: {
-            [HttpStatusCode.created]: {
-              schema: createBlockchainResponseCreatedBodySchema,
-            },
-            [HttpStatusCode.badRequest]: {
-              schema: responseErrorBodySchema,
-            },
-          },
         },
-      }),
-      new HttpRoute({
+      },
+      {
         method: HttpMethodName.post,
         path: 'blocks',
         handler: this.addBlockToBlockchain.bind(this),
@@ -69,32 +55,16 @@ export class BlockchainHttpController implements HttpController {
           request: {
             body: addBlockToBlockchainBodySchema,
           },
-          response: {
-            [HttpStatusCode.ok]: {
-              schema: addBlockToBlockchainResponseOkBodySchema,
-            },
-            [HttpStatusCode.badRequest]: {
-              schema: responseErrorBodySchema,
-            },
-          },
         },
-      }),
-      new HttpRoute({
+      },
+      {
         method: HttpMethodName.get,
         path: 'blocks',
         handler: this.findBlocksFromBlockchain.bind(this),
         schema: {
           request: {},
-          response: {
-            [HttpStatusCode.ok]: {
-              schema: findBlocksFromBlockchainResponseOkBodySchema,
-            },
-            [HttpStatusCode.badRequest]: {
-              schema: responseErrorBodySchema,
-            },
-          },
         },
-      }),
+      },
     ];
   }
 
@@ -119,8 +89,6 @@ export class BlockchainHttpController implements HttpController {
   ): Promise<HttpOkResponse<AddBlockToBlockchainResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>> {
     const { blockData } = request.body;
 
-    console.log({ blockData });
-
     try {
       const { blocks } = await this.addBlockToBlockchainCommandHandler.execute({ blockData });
 
@@ -140,7 +108,7 @@ export class BlockchainHttpController implements HttpController {
     try {
       const { blocks } = await this.findBlocksFromBlockchainQueryHandler.execute();
 
-      return { statusCode: HttpStatusCode.ok, body: { data: { blocks } } };
+      return { statusCode: HttpStatusCode.ok, body: { data: blocks } };
     } catch (error) {
       if (error instanceof BlockchainNotFoundError) {
         return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };

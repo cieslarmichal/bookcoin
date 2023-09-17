@@ -1,11 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import { NormalizeUrlPayload, normalizeUrlPayloadSchema } from './payloads/normalizeUrlPayload.js';
-import {
-  RegisterControllerRoutesPayload,
-  registerControllerRoutesPayloadSchema,
-} from './payloads/registerControllerRoutesPayload.js';
-import { RegisterRoutesPayload, registerRoutesPayloadSchema } from './payloads/registerRoutesPayload.js';
 import { BlockchainHttpController } from '../../blockchainModule/api/httpControllers/blockchainHttpController/blockchainHttpController.js';
 import { blockchainModuleSymbols } from '../../blockchainModule/blockchainModuleSymbols.js';
 import { ApplicationError } from '../../common/validation/errors/applicationError.js';
@@ -16,6 +10,21 @@ import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { BaseError } from '../../common/validation/errors/baseError.js';
 import { DomainError } from '../../common/validation/errors/domainError.js';
 import { Validator } from '../../common/validation/validator.js';
+import { HttpController } from '../../common/types/http/httpController.js';
+import { HttpRoute } from '../../common/types/http/httpRoute.js';
+
+export interface RegisterControllerRoutesPayload {
+  readonly controller: HttpController;
+}
+
+export interface RegisterRoutesPayload {
+  readonly routes: HttpRoute[];
+  readonly basePath: string;
+}
+
+export interface NormalizeUrlPayload {
+  readonly url: string;
+}
 
 export class HttpRouter {
   private readonly rootPath = '';
@@ -37,7 +46,7 @@ export class HttpRouter {
   }
 
   private registerControllerRoutes(payload: RegisterControllerRoutesPayload): void {
-    const { controller } = Validator.validate(registerControllerRoutesPayloadSchema, payload);
+    const { controller } = payload;
 
     const { basePath } = controller;
 
@@ -47,7 +56,7 @@ export class HttpRouter {
   }
 
   private registerRoutes(payload: RegisterRoutesPayload): void {
-    const { routes, basePath } = Validator.validate(registerRoutesPayloadSchema, payload);
+    const { routes, basePath } = payload;
 
     routes.map(({ path, method, handler, schema }) => {
       const fastifyHandler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
@@ -173,7 +182,7 @@ export class HttpRouter {
   }
 
   private normalizeUrl(payload: NormalizeUrlPayload): string {
-    const { url } = Validator.validate(normalizeUrlPayloadSchema, payload);
+    const { url } = payload;
 
     const urlWithoutDoubleSlashes = url.replace(/(\/+)/g, '/');
 
