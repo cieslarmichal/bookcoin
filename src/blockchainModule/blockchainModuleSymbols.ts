@@ -6,4 +6,5 @@ export const blockchainModuleSymbols = {
   findBlocksFromBlockchainQueryHandler: Symbol('findBlocksFromBlockchainQueryHandler'),
   blockAddedToBlockchainSubscriber: Symbol('blockAddedToBlockchainSubscriber'),
   blockchainHttpController: Symbol('blockchainHttpController'),
+  webSocketController: Symbol('webSocketController'),
 };

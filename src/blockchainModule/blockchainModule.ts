@@ -12,6 +12,7 @@ import { DependencyInjectionContainer } from '../libs/dependencyInjection/depend
 import { DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
 import { CreateBlockchainCommandHandler } from './application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
 import { CreateBlockchainCommandHandlerImpl } from './application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandlerImpl.js';
+import { WebSocketController } from './api/webSocketController/webSocketController.js';
 
 export class BlockchainModule implements DependencyInjectionModule {
   public async declareBindings(container: DependencyInjectionContainer): Promise<void> {
@@ -46,5 +47,7 @@ export class BlockchainModule implements DependencyInjectionModule {
       blockchainModuleSymbols.blockchainHttpController,
       BlockchainHttpController,
     );
+
+    container.bindToConstructor<WebSocketController>(blockchainModuleSymbols.webSocketController, WebSocketController);
   }
 }

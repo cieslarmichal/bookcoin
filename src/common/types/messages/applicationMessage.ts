@@ -1,4 +1,4 @@
-export interface ApplicationEvent<Payload> {
+export interface ApplicationMessage<Payload> {
   readonly name: string;
   readonly payload: Payload;
 }

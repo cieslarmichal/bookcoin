@@ -14,6 +14,9 @@ import { LogLevel } from './libs/logger/logLevel.js';
 import { LoggerService } from './libs/logger/services/loggerService/loggerService.js';
 import { BlockAddedToBlockchainSubscriber } from './blockchainModule/application/subscribers/blockAddedToBlockchainSubscriber/blockAddedToBlockchainSubscriber.js';
 import { HttpRouter } from './core/httpRouter/httpRouter.js';
+import { PeerToPeerWebSocketServerImpl } from './core/p2p/peerToPeerWebSocketServerImpl.js';
+import { WebSocketController } from './blockchainModule/api/webSocketController/webSocketController.js';
+import { blockchainModuleSymbols } from './blockchainModule/blockchainModuleSymbols.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
@@ -45,18 +48,30 @@ export class Application {
 
     httpRouter.registerAllRoutes();
 
-    // app.get('/peers', (req, res) => {
-    //   res.send(getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort));
-    // });
+    const webSocketController = container.get<WebSocketController>(blockchainModuleSymbols.webSocketController);
 
-    // app.post('/addPeer', (req, res) => {
-    //   connectToPeers(req.body.peer);
-    //   res.send();
-    // });
+    webSocketController.handleConnection.bind(webSocketController);
+    webSocketController.handleMessage.bind(webSocketController);
 
-    // app.listen(httpPort, httpHost, () => {
-    //   console.log('Listening http on port: ' + myHttpPort);
-    // });
+    const peerToPeerWebSocketServer = new PeerToPeerWebSocketServerImpl(
+      container,
+      webSocketController.handleConnection,
+      webSocketController.handleMessage,
+    );
+
+    await peerToPeerWebSocketServer.start(peerToPeerPort);
+
+    server.get('/peers', (_req, res) => {
+      res.send(peerToPeerWebSocketServer.getPeers());
+    });
+
+    server.post('/peers', (req, res) => {
+      const requestBody = req.body as { peer: string };
+
+      peerToPeerWebSocketServer.addPeer(requestBody.peer);
+
+      res.send();
+    });
 
     await server.listen({ host: httpServerHost, port: httpServerPort });
 

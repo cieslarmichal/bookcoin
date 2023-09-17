@@ -9,6 +9,7 @@ import { DependencyInjectionContainer } from '../libs/dependencyInjection/depend
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { LoggerModule } from '../libs/logger/loggerModule.js';
 import { LoggerModuleConfigTestFactory } from '../libs/logger/tests/factories/loggerModuleConfigTestFactory/loggerModuleConfigTestFactory.js';
+import { WebSocketController } from './api/webSocketController/webSocketController.js';
 
 describe('BlockchainModule', () => {
   let container: DependencyInjectionContainer;
@@ -24,6 +25,10 @@ describe('BlockchainModule', () => {
   it('declares bindings', async () => {
     expect(container.get<BlockchainHttpController>(blockchainModuleSymbols.blockchainHttpController)).toBeInstanceOf(
       BlockchainHttpController,
+    );
+
+    expect(container.get<WebSocketController>(blockchainModuleSymbols.webSocketController)).toBeInstanceOf(
+      WebSocketController,
     );
   });
 });
