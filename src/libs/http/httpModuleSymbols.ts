@@ -1,4 +1,4 @@
 export const httpModuleSymbols = {
   fetchClient: Symbol('fetchClient'),
-  httpServiceFactory: Symbol('httpServiceFactory'),
+  httpService: Symbol('httpService'),
 };

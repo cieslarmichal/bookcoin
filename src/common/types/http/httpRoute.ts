@@ -41,8 +41,8 @@ export class HttpRoute {
   public readonly handler: HttpRouteHandler;
   public readonly schema: ValidationSchemaType<typeof httpRouteSchemaSchema>;
 
-  public constructor(input: HttpRouteInput) {
-    const { method, path, handler, schema } = Validator.validate(httpRouteInputSchema, input);
+  public constructor(payload: HttpRouteInput) {
+    const { method, path, handler, schema } = Validator.validate(httpRouteInputSchema, payload);
 
     this.method = method;
     this.path = path ?? '';

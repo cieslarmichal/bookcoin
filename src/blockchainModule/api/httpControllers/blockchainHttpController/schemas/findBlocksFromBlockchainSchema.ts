@@ -1,9 +1,11 @@
 import { blockchainSchema } from './blockchainSchema.js';
-import { Schema } from '../../../../../libs/validator/schema.js';
-import { SchemaType } from '../../../../../libs/validator/schemaType.js';
+import { ValidationSchema } from '../../../../../common/validation/validationSchema.js';
+import { ValidationSchemaType } from '../../../../../common/validation/validationSchemaType.js';
 
-export const findBlocksFromBlockchainResponseOkBodySchema = Schema.object({
+export const findBlocksFromBlockchainResponseOkBodySchema = ValidationSchema.object({
   data: blockchainSchema,
 });
 
-export type FindBlocksFromBlockchainResponseOkBody = SchemaType<typeof findBlocksFromBlockchainResponseOkBodySchema>;
+export type FindBlocksFromBlockchainResponseOkBody = ValidationSchemaType<
+  typeof findBlocksFromBlockchainResponseOkBodySchema
+>;

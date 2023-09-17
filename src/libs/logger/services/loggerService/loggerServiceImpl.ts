@@ -17,38 +17,38 @@ export class LoggerServiceImpl implements LoggerService {
     private readonly loggerClient: LoggerClient,
   ) {}
 
-  public fatal(input: FatalPayload): void {
-    const { message, context } = Validator.validate(fatalPayloadSchema, input);
+  public fatal(payload: FatalPayload): void {
+    const { message, context } = Validator.validate(fatalPayloadSchema, payload);
 
     this.loggerClient.fatal({ context: context ?? {} }, message);
   }
 
-  public error(input: ErrorPayload): void {
-    const { message, context } = Validator.validate(errorPayloadSchema, input);
+  public error(payload: ErrorPayload): void {
+    const { message, context } = Validator.validate(errorPayloadSchema, payload);
 
     this.loggerClient.error({ context: context ?? {} }, message);
   }
 
-  public warn(input: WarnPayload): void {
-    const { message, context } = Validator.validate(warnPayloadSchema, input);
+  public warn(payload: WarnPayload): void {
+    const { message, context } = Validator.validate(warnPayloadSchema, payload);
 
     this.loggerClient.warn({ context: context ?? {} }, message);
   }
 
-  public info(input: InfoPayload): void {
-    const { message, context } = Validator.validate(infoPayloadSchema, input);
+  public info(payload: InfoPayload): void {
+    const { message, context } = Validator.validate(infoPayloadSchema, payload);
 
     this.loggerClient.info({ context: context ?? {} }, message);
   }
 
-  public debug(input: DebugPayload): void {
-    const { message, context } = Validator.validate(debugPayloadSchema, input);
+  public debug(payload: DebugPayload): void {
+    const { message, context } = Validator.validate(debugPayloadSchema, payload);
 
     this.loggerClient.debug({ context: context ?? {} }, message);
   }
 
-  public log(input: LogPayload): void {
-    const { message, context } = Validator.validate(logPayloadSchema, input);
+  public log(payload: LogPayload): void {
+    const { message, context } = Validator.validate(logPayloadSchema, payload);
 
     this.loggerClient.info({ context: context ?? {} }, message);
   }

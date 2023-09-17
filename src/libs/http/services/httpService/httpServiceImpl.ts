@@ -1,43 +1,36 @@
 import { stringify } from 'querystring';
 
-import { HttpService } from './httpService.js';
-import { HttpServiceConfig } from './httpServiceConfig.js';
-import { SendRequestPayload, sendRequestPayloadSchema } from './payloads/sendRequestPayload.js';
+import { HttpService, SendRequestPayload } from './httpService.js';
 import { LoggerService } from '../../../logger/services/loggerService/loggerService.js';
-import { Validator } from '../../../validator/validator.js';
 import { FetchClient } from '../../clients/fetchClient/fetchClient.js';
 import { HttpServiceError } from '../../errors/httpServiceError.js';
 import { HttpResponse } from '../../httpResponse.js';
+import { Inject, Injectable } from '../../../dependencyInjection/decorators.js';
+import { httpModuleSymbols } from '../../httpModuleSymbols.js';
+import { loggerModuleSymbols } from '../../../logger/loggerModuleSymbols.js';
 
+@Injectable()
 export class HttpServiceImpl implements HttpService {
   public constructor(
-    private readonly config: HttpServiceConfig,
-    private readonly fetchClient: FetchClient,
-    private readonly loggerService: LoggerService,
+    @Inject(httpModuleSymbols.fetchClient) private readonly fetchClient: FetchClient,
+    @Inject(loggerModuleSymbols.loggerService) private readonly loggerService: LoggerService,
   ) {}
 
-  public async sendRequest(input: SendRequestPayload): Promise<HttpResponse> {
-    const {
-      endpoint,
-      headers: requestHeaders,
-      queryParams,
-      method,
-      body: requestBody,
-    } = Validator.validate(sendRequestPayloadSchema, input);
-
-    const { headers: defaultHeaders = {}, baseUrl } = this.config;
-
-    const headers = { ...defaultHeaders, ...requestHeaders };
+  public async sendRequest(payload: SendRequestPayload): Promise<HttpResponse> {
+    const { method, url: initialUrl, headers, queryParams, body: requestBody } = payload;
 
     const body = JSON.stringify(requestBody);
 
-    let url = `${baseUrl}${endpoint}`;
+    let url = initialUrl;
 
     if (queryParams && Object.keys(queryParams).length) {
       url += `?${stringify(queryParams)}`;
     }
 
-    this.loggerService.debug({ message: 'Sending http request...', context: { url, method, body, headers } });
+    this.loggerService.debug({
+      message: 'Sending http request...',
+      context: { url, method, body, headers },
+    });
 
     try {
       const response = await this.fetchClient.fetch({

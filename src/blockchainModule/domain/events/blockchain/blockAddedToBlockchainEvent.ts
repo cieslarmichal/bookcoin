@@ -16,8 +16,8 @@ export class BlockAddedToBlockchainEvent implements DomainEvent {
   public readonly occuredDate: Date;
   public readonly blockchain: Blockchain;
 
-  public constructor(input: BlockAddedToBlockchainEventInput) {
-    const { blockchain } = Validator.validate(blockAddedToBlockchainEventInputSchema, input);
+  public constructor(payload: BlockAddedToBlockchainEventInput) {
+    const { blockchain } = Validator.validate(blockAddedToBlockchainEventInputSchema, payload);
 
     this.name = BlockAddedToBlockchainEvent.name;
     this.occuredDate = new Date();

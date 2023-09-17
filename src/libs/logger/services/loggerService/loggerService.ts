@@ -6,10 +6,10 @@ import { LogPayload } from './payloads/logPayload.js';
 import { WarnPayload } from './payloads/warnPayload.js';
 
 export interface LoggerService {
-  fatal(input: FatalPayload): void;
-  error(input: ErrorPayload): void;
-  warn(input: WarnPayload): void;
-  info(input: InfoPayload): void;
-  debug(input: DebugPayload): void;
-  log(input: LogPayload): void;
+  fatal(payload: FatalPayload): void;
+  error(payload: ErrorPayload): void;
+  warn(payload: WarnPayload): void;
+  info(payload: InfoPayload): void;
+  debug(payload: DebugPayload): void;
+  log(payload: LogPayload): void;
 }

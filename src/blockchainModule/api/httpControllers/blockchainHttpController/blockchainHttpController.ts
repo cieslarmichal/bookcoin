@@ -8,13 +8,6 @@ import {
   FindBlocksFromBlockchainResponseOkBody,
   findBlocksFromBlockchainResponseOkBodySchema,
 } from './schemas/findBlocksFromBlockchainSchema.js';
-import { HttpController } from '../../../../common/http/httpController.js';
-import { HttpMethodName } from '../../../../common/http/httpMethodName.js';
-import { HttpRequest } from '../../../../common/http/httpRequest.js';
-import { HttpOkResponse, HttpBadRequestResponse, HttpCreatedResponse } from '../../../../common/http/httpResponse.js';
-import { HttpRoute } from '../../../../common/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../common/http/httpStatusCode.js';
-import { responseErrorBodySchema, ResponseErrorBody } from '../../../../common/http/responseErrorBodySchema.js';
 import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { AddBlockToBlockchainCommandHandler } from '../../../application/commandHandlers/addBlockToBlockchainCommandHandler/addBlockToBlockchainCommandHandler.js';
 import { FindBlocksFromBlockchainQueryHandler } from '../../../application/queryHandlers/findBlocksFromBlockchainQueryHandler/findBlocksFromBlockchainQueryHandler.js';
@@ -26,6 +19,17 @@ import {
 import { CreateBlockchainCommandHandler } from '../../../application/commandHandlers/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
 import { BlockchainAlreadyExistsError } from '../../../application/errors/blockchainAlreadyExistsError.js';
 import { BlockchainNotFoundError } from '../../../application/errors/blockchainNotFoundError.js';
+import { HttpController } from '../../../../common/types/http/httpController.js';
+import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
+import { HttpRequest } from '../../../../common/types/http/httpRequest.js';
+import {
+  HttpCreatedResponse,
+  HttpBadRequestResponse,
+  HttpOkResponse,
+} from '../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
+import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
+import { responseErrorBodySchema, ResponseErrorBody } from '../../../../common/types/http/responseErrorBodySchema.js';
 
 @Injectable()
 export class BlockchainHttpController implements HttpController {

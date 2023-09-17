@@ -1,3 +1,3 @@
 export interface Mapper<Input, Output> {
-  map(input: Input): Output;
+  map(payload: Input): Output;
 }

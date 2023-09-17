@@ -1,10 +1,13 @@
 import { DependencyInjectionContainer } from './dependencyInjectionContainer.js';
-import { CreatePayload, createPayloadSchema } from './payloads/createPayload.js';
-import { Validator } from '../validator/validator.js';
+import { DependencyInjectionModule } from './dependencyInjectionModule.js';
+
+export interface CreatePayload {
+  readonly modules: DependencyInjectionModule[];
+}
 
 export class DependencyInjectionContainerFactory {
-  public static create(input: CreatePayload): DependencyInjectionContainer {
-    const { modules } = Validator.validate(createPayloadSchema, input);
+  public static create(payload: CreatePayload): DependencyInjectionContainer {
+    const { modules } = payload;
 
     const container = new DependencyInjectionContainer();
 

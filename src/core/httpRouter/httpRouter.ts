@@ -36,8 +36,8 @@ export class HttpRouter {
     this.registerControllerRoutes({ controller: blockchainHttpController });
   }
 
-  private registerControllerRoutes(input: RegisterControllerRoutesPayload): void {
-    const { controller } = Validator.validate(registerControllerRoutesPayloadSchema, input);
+  private registerControllerRoutes(payload: RegisterControllerRoutesPayload): void {
+    const { controller } = Validator.validate(registerControllerRoutesPayloadSchema, payload);
 
     const { basePath } = controller;
 
@@ -46,8 +46,8 @@ export class HttpRouter {
     this.registerRoutes({ routes, basePath });
   }
 
-  private registerRoutes(input: RegisterRoutesPayload): void {
-    const { routes, basePath } = Validator.validate(registerRoutesPayloadSchema, input);
+  private registerRoutes(payload: RegisterRoutesPayload): void {
+    const { routes, basePath } = Validator.validate(registerRoutesPayloadSchema, payload);
 
     routes.map(({ path, method, handler, schema }) => {
       const fastifyHandler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
@@ -172,8 +172,8 @@ export class HttpRouter {
     });
   }
 
-  private normalizeUrl(input: NormalizeUrlPayload): string {
-    const { url } = Validator.validate(normalizeUrlPayloadSchema, input);
+  private normalizeUrl(payload: NormalizeUrlPayload): string {
+    const { url } = Validator.validate(normalizeUrlPayloadSchema, payload);
 
     const urlWithoutDoubleSlashes = url.replace(/(\/+)/g, '/');
 
