@@ -1,15 +1,15 @@
-import { DebugPayload } from './payloads/debugPayload.js';
-import { ErrorPayload } from './payloads/errorPayload.js';
-import { FatalPayload } from './payloads/fatalPayload.js';
-import { InfoPayload } from './payloads/infoPayload.js';
-import { LogPayload } from './payloads/logPayload.js';
-import { WarnPayload } from './payloads/warnPayload.js';
+import { LogContext } from '../../logContext.js';
+
+export interface LogPayload {
+  readonly message: string;
+  readonly context?: LogContext;
+}
 
 export interface LoggerService {
-  fatal(payload: FatalPayload): void;
-  error(payload: ErrorPayload): void;
-  warn(payload: WarnPayload): void;
-  info(payload: InfoPayload): void;
-  debug(payload: DebugPayload): void;
+  fatal(payload: LogPayload): void;
+  error(payload: LogPayload): void;
+  warn(payload: LogPayload): void;
+  info(payload: LogPayload): void;
+  debug(payload: LogPayload): void;
   log(payload: LogPayload): void;
 }
