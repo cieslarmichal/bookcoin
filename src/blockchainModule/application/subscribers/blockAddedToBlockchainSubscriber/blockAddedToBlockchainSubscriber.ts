@@ -1,6 +1,6 @@
-import { DomainEventHandler } from '../../../../common/domain/events/domainEventHandler';
-import { DomainEvents } from '../../../../common/domain/events/domainEvents';
-import { BlockAddedToBlockchainEvent } from '../../../domain/events/blockchain/blockAddedToBlockchainEvent';
+import { DomainEventHandler } from '../../../../common/types/domain/events/domainEventHandler.js';
+import { DomainEvents } from '../../../../common/types/domain/events/domainEvents.js';
+import { BlockAddedToBlockchainEvent } from '../../../domain/events/blockchain/blockAddedToBlockchainEvent.js';
 
 export class BlockAddedToBlockchainSubscriber extends DomainEventHandler<BlockAddedToBlockchainEvent> {
   public override setupSubscriptions(): void {

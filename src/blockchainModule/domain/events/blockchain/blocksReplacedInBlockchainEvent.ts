@@ -1,23 +1,18 @@
-import { DomainEvent } from '../../../../common/domain/events/domainEvent';
-import { UniqueId } from '../../../../common/domain/uniqueId';
-import { Schema } from '../../../../libs/validator/schema';
-import { SchemaType } from '../../../../libs/validator/schemaType';
-import { Validator } from '../../../../libs/validator/validator';
-import { Blockchain } from '../../entities/blockchain/blockchain';
+import { DomainEvent } from '../../../../common/types/domain/events/domainEvent.js';
+import { UniqueId } from '../../../../common/types/domain/uniqueId.js';
+import { Blockchain } from '../../entities/blockchain/blockchain.js';
 
-export const blocksReplacedInBlockchainEventInputSchema = Schema.object({
-  blockchain: Schema.custom<Blockchain>((data) => data instanceof Blockchain),
-});
-
-export type BlocksReplacedInBlockchainEventInput = SchemaType<typeof blocksReplacedInBlockchainEventInputSchema>;
+export interface BlocksReplacedInBlockchainEventDraft {
+  readonly blockchain: Blockchain;
+}
 
 export class BlocksReplacedInBlockchainEvent implements DomainEvent {
   public readonly name: string;
   public readonly occuredDate: Date;
   public readonly blockchain: Blockchain;
 
-  public constructor(payload: BlocksReplacedInBlockchainEventInput) {
-    const { blockchain } = Validator.validate(blocksReplacedInBlockchainEventInputSchema, payload);
+  public constructor(draft: BlocksReplacedInBlockchainEventDraft) {
+    const { blockchain } = draft;
 
     this.name = BlocksReplacedInBlockchainEvent.name;
     this.occuredDate = new Date();

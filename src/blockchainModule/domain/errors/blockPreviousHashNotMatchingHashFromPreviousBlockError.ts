@@ -1,4 +1,4 @@
-import { DomainError } from '../../../common/errors/domainError.js';
+import { DomainError } from '../../../common/validation/errors/domainError.js';
 
 interface Context {
   readonly blockPreviousHash: string;
