@@ -1,5 +1,9 @@
-import { BlockDto } from './blockDTO.js';
+import { Type, type Static } from '@sinclair/typebox';
 
-export interface FindBlocksFromBlockchainResponseOkBody {
-  data: BlockDto[];
-}
+import { blockDTOSchema } from './blockDTO.js';
+
+export const findBlocksFromBlockchainResponseBodySchema = Type.Object({
+  data: Type.Array(blockDTOSchema),
+});
+
+export type FindBlocksFromBlockchainResponseBody = Static<typeof findBlocksFromBlockchainResponseBodySchema>;

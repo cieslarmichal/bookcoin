@@ -1,5 +1,9 @@
-import { blockchainDto } from './blockchainDto.js';
+import { Type, type Static } from '@sinclair/typebox';
 
-export interface CreateBlockchainResponseCreatedBody {
-  data: blockchainDto;
-}
+import { blockDTOSchema } from './blockDTO.js';
+
+export const createBlockchainResponseBodySchema = Type.Object({
+  data: Type.Array(blockDTOSchema),
+});
+
+export type CreateBlockchainResponseBody = Static<typeof createBlockchainResponseBodySchema>;
