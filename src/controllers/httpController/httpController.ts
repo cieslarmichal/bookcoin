@@ -1,120 +1,56 @@
-import {
-  type AddBlockToBlockchainBody,
-  addBlockToBlockchainBodySchema,
-  type AddBlockToBlockchainResponseOkBody,
-} from './schemas/addBlockToBlockchainSchema.js';
-import { type CreateBlockchainResponseCreatedBody } from './schemas/createBlockchainSchema.js';
-import { type FindBlocksFromBlockchainResponseOkBody } from './schemas/findBlocksFromBlockchainSchema.js';
-import { type HttpController } from '../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../common/types/http/httpRequest.js';
-import {
-  type HttpCreatedResponse,
-  type HttpBadRequestResponse,
-  type HttpOkResponse,
-} from '../../../../common/types/http/httpResponse.js';
-import { type HttpRoute } from '../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
-import { type ResponseErrorBody } from '../../../../common/types/http/responseErrorBody.js';
-import { Inject, Injectable } from '../../../../libs/dependencyInjection/decorators.js';
-import { type AddBlockToBlockchainCommandHandler } from '../../../application/actions/addBlockToBlockchainCommandHandler/addBlockToBlockchainCommandHandler.js';
-import { type CreateBlockchainCommandHandler } from '../../../application/actions/createBlockchainCommandHandler/createBlockchainCommandHandler.js';
-import { type FindBlocksFromBlockchainQueryHandler } from '../../../application/actions/findBlocksFromBlockchainQueryHandler/findBlocksFromBlockchainQueryHandler.js';
-import { BlockchainAlreadyExistsError } from '../../../application/errors/blockchainAlreadyExistsError.js';
-import { BlockchainNotFoundError } from '../../../application/errors/blockchainNotFoundError.js';
-import { blockchainModuleSymbols } from '../../../blockchainModuleSymbols.js';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { type FastifyReply, type FastifyInstance, type FastifyRequest } from 'fastify';
+import { request } from 'http';
 
-@Injectable()
-export class BlockchainHttpController implements HttpController {
-  public readonly basePath = 'blockchain';
+import {
+  type AddBlockToBlockchainRequestBody,
+  addBlockToBlockchainRequestBodySchema,
+} from './schemas/addBlockToBlockchainSchema.js';
+import { type FindBlocksFromBlockchainResponseOkBody } from './schemas/findBlocksFromBlockchainSchema.js';
+import { HttpStatusCode } from '../../common/http/httpStatusCode.js';
+export class HttpController {
+  public readonly basePath = '/api/blockchain';
 
   public constructor(
-    @Inject(blockchainModuleSymbols.createBlockchainCommandHandler)
     private readonly createBlockchainCommandHandler: CreateBlockchainCommandHandler,
-    @Inject(blockchainModuleSymbols.addBlockToBlockchainCommandHandler)
     private readonly addBlockToBlockchainCommandHandler: AddBlockToBlockchainCommandHandler,
-    @Inject(blockchainModuleSymbols.findBlocksFromBlockchainQueryHandler)
     private readonly findBlocksFromBlockchainQueryHandler: FindBlocksFromBlockchainQueryHandler,
   ) {}
 
-  public getHttpRoutes(): HttpRoute[] {
-    return [
-      {
-        method: HttpMethodName.post,
-        path: '',
-        handler: this.createBlockchain.bind(this),
-        schema: {
-          request: {},
-        },
-      },
-      {
-        method: HttpMethodName.post,
-        path: 'blocks',
-        handler: this.addBlockToBlockchain.bind(this),
-        schema: {
-          request: {
-            body: addBlockToBlockchainBodySchema,
-          },
-        },
-      },
-      {
-        method: HttpMethodName.get,
-        path: 'blocks',
-        handler: this.findBlocksFromBlockchain.bind(this),
-        schema: {
-          request: {},
-        },
-      },
-    ];
+  public registerRoutes(fastify: FastifyInstance): void {
+    fastify.register(async (fastifyInstance) => {
+      fastifyInstance.post(`${this.basePath}/`, this.createBlockchain.bind(this));
+
+      fastifyInstance.post(
+        `${this.basePath}/blocks`,
+        { schema: { body: addBlockToBlockchainRequestBodySchema } },
+        this.addBlockToBlockchain.bind(this),
+      );
+
+      fastifyInstance.get(`${this.basePath}/blocks`, this.findBlocksFromBlockchain.bind(this));
+    });
   }
 
-  private async createBlockchain(): Promise<
-    HttpCreatedResponse<CreateBlockchainResponseCreatedBody> | HttpBadRequestResponse<ResponseErrorBody>
-  > {
-    try {
-      const { blocks } = await this.createBlockchainCommandHandler.execute();
+  private async createBlockchain(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { blocks } = await this.createBlockchainCommandHandler.execute();
 
-      return { statusCode: HttpStatusCode.created, body: { data: { blocks } } };
-    } catch (error) {
-      if (error instanceof BlockchainAlreadyExistsError) {
-        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
-      }
-
-      throw error;
-    }
+    reply.code(HttpStatusCode.created).send({ data: { blocks } });
   }
 
   private async addBlockToBlockchain(
-    request: HttpRequest<AddBlockToBlockchainBody>,
-  ): Promise<HttpOkResponse<AddBlockToBlockchainResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>> {
+    request: FastifyRequest<AddBlockToBlockchainRequestBody>,
+    reply: FastifyReply,
+  ): Promise<void> {
     const { blockData } = request.body;
 
-    try {
-      const { blocks } = await this.addBlockToBlockchainCommandHandler.execute({ blockData });
+    const { blocks } = await this.addBlockToBlockchainCommandHandler.execute({ blockData });
 
-      return { statusCode: HttpStatusCode.ok, body: { data: { blocks } } };
-    } catch (error) {
-      if (error instanceof BlockchainNotFoundError) {
-        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
-      }
-
-      throw error;
-    }
+    reply.code(HttpStatusCode.ok).send({ data: { blocks } });
   }
 
-  private async findBlocksFromBlockchain(): Promise<
-    HttpOkResponse<FindBlocksFromBlockchainResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>
-  > {
-    try {
-      const { blocks } = await this.findBlocksFromBlockchainQueryHandler.execute();
+  private async findBlocksFromBlockchain(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { blocks } = await this.findBlocksFromBlockchainQueryHandler.execute();
 
-      return { statusCode: HttpStatusCode.ok, body: { data: blocks } };
-    } catch (error) {
-      if (error instanceof BlockchainNotFoundError) {
-        return { statusCode: HttpStatusCode.badRequest, body: { error: { name: error.name, message: error.message } } };
-      }
-
-      throw error;
-    }
+    reply.code(HttpStatusCode.ok).send({ data: { blocks } });
   }
 }

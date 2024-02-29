@@ -145,7 +145,13 @@
           "order": "asc",
           "caseInsensitive": true
         },
-        "pathGroupsExcludedImportTypes": ["builtin"]
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "pathGroups": [
+          {
+            "pattern": "@common/**",
+            "group": "internal"
+          }
+        ]
       }
     ],
     "@typescript-eslint/explicit-member-accessibility": [
@@ -162,11 +168,18 @@
     ],
     "@typescript-eslint/naming-convention": [
       "error",
-      { "selector": "variableLike", "format": ["strictCamelCase"] },
-      { "selector": "property", "format": ["strictCamelCase"] },
-      { "selector": "method", "format": ["strictCamelCase"] },
-      { "selector": "memberLike", "format": ["strictCamelCase"] },
-      { "selector": "typeLike", "format": ["StrictPascalCase"] }
+      {
+        "selector": "default",
+        "format": ["camelCase"],
+        "filter": {
+          "regex": "^(ID)$",
+          "match": false
+        }
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
     ],
     "import/no-unresolved": 0,
     "@typescript-eslint/no-empty-function": 0,

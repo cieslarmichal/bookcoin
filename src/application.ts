@@ -30,31 +30,27 @@ export class Application {
 
     webSocketController.handleMessage.bind(webSocketController);
 
-    const peerToPeerWebSocketServer = new PeerToPeerWebSocketServerImpl(
+    const peerToPeerServer = new PeerToPeerServerImpl(
       container,
       webSocketController.handleConnection,
       webSocketController.handleMessage,
     );
 
-    await peerToPeerWebSocketServer.start(peerToPeerPort);
+    await peerToPeerServer.start(peerToPeerPort);
 
     server.get('/peers', (_req, res) => {
-      res.send(peerToPeerWebSocketServer.getPeers());
+      res.send(peerToPeerServer.getPeers());
     });
 
     server.post('/peers', (req, res) => {
       const requestBody = req.body as { peer: string };
 
-      peerToPeerWebSocketServer.addPeer(requestBody.peer);
+      peerToPeerServer.addPeer(requestBody.peer);
 
       res.send();
     });
 
     await server.listen({ host: httpServerHost, port: httpServerPort });
-
-    new BlockAddedToBlockchainSubscriber().setupSubscriptions();
-
-    const loggerService = container.get<LoggerService>(loggerModuleSymbols.loggerService);
 
     loggerService.log({ message: `Server started.`, context: { httpServerHost, httpServerPort } });
   }

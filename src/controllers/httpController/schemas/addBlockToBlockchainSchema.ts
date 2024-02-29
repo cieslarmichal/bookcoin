@@ -1,15 +1,15 @@
-import { ValidationSchema } from '../../../../../common/validation/validationSchema.js';
-import { ValidationSchemaType } from '../../../../../common/validation/validationSchemaType.js';
-import { blockchainDto } from './blockchainDto.js';
+import { type Static, Type } from '@sinclair/typebox';
 
-export const addBlockToBlockchainBodySchema = ValidationSchema.object({
-  blockData: ValidationSchema.string(),
+export const addBlockToBlockchainRequestBodySchema = Type.Object({
+  blockData: Type.String(),
 });
 
-export type AddBlockToBlockchainBody = ValidationSchemaType<typeof addBlockToBlockchainBodySchema>;
+export type AddBlockToBlockchainRequestBody = Static<typeof addBlockToBlockchainRequestBodySchema>;
 
-export const addBlockToBlockchainResponseOkBodySchema = ValidationSchema.object({});
+export const addBlockToBlockchainResponseBodySchema = Type.Object({
+  data: Type.String(),
+});
 
-export interface AddBlockToBlockchainResponseOkBody {
-  data: blockchainDto;
+export interface AddBlockToBlockchainResponseBody {
+  data: Type.Array(blockDTOSchema);
 }

@@ -1,28 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { WebSocket, WebSocketServer as WsWebSocketServer } from 'ws';
 
+import { type LoggerService } from './common/logger/services/loggerService/loggerService.js';
+import { type ApplicationMessage } from './common/types/applicationMessage.js';
 import { type Peer } from './peer.js';
-import { type BroadcastToAllPeersPayload, type PeerToPeerWebSocketServer } from './peerToPeerWebSocketServer.js';
-import { type ApplicationMessage } from '../../common/types/messages/applicationMessage.js';
-import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { loggerModuleSymbols } from '../../libs/logger/loggerModuleSymbols.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 
-export class PeerToPeerWebSocketServerImpl implements PeerToPeerWebSocketServer {
-  private readonly container: DependencyInjectionContainer;
-  private readonly loggerService: LoggerService;
+export interface BroadcastToAllPeersPayload {
+  message: ApplicationMessage<unknown>;
+}
+
+export class PeerToPeerWebSocketServer {
   private wsInstance: WsWebSocketServer | null;
   private peers: WebSocket[] = [];
 
   public constructor(
-    container: DependencyInjectionContainer,
+    private readonly loggerService: LoggerService,
     private readonly connectionHandler: (webSocket: WebSocket) => void,
     private readonly messageHandler: (webSocket: WebSocket, message: ApplicationMessage<any>) => Promise<void>,
   ) {
-    this.container = container;
-
-    this.loggerService = this.container.get<LoggerService>(loggerModuleSymbols.loggerService);
-
     this.wsInstance = null;
   }
 
@@ -36,26 +31,20 @@ export class PeerToPeerWebSocketServerImpl implements PeerToPeerWebSocketServer 
     });
 
     wsInstance.on('error', (error) => {
-      console.log('connection failed: ', error);
+      console.error('connection failed: ', error);
     });
 
     this.loggerService.info({
       message: `WebSocket server started.`,
-      context: {
-        port,
-        source: PeerToPeerWebSocketServerImpl.name,
-      },
+      port,
     });
   }
 
-  private initializeConnection(ws: WebSocket) {
-    this.loggerService.info({
+  private initializeConnection(ws: WebSocket): void {
+    this.loggerService.debug({
       message: 'Connected to peer.',
-      context: {
-        source: PeerToPeerWebSocketServerImpl.name,
-        remoteAddress: (ws as any)._socket.remoteAddress,
-        remotePort: (ws as any)._socket.remotePort,
-      },
+      remoteAddress: (ws as any)._socket.remoteAddress,
+      remotePort: (ws as any)._socket.remotePort,
     });
 
     this.peers.push(ws);
@@ -74,12 +63,9 @@ export class PeerToPeerWebSocketServerImpl implements PeerToPeerWebSocketServer 
   private closeConnection(ws: WebSocket, error?: Error): void {
     this.loggerService.error({
       message: 'Connection to peer closed.',
-      context: {
-        source: PeerToPeerWebSocketServerImpl.name,
-        error,
-        remoteAddress: (ws as any)._socket.remoteAddress,
-        remotePort: (ws as any)._socket.remotePort,
-      },
+      error,
+      remoteAddress: (ws as any)._socket.remoteAddress,
+      remotePort: (ws as any)._socket.remotePort,
     });
 
     this.peers.splice(this.peers.indexOf(ws), 1);
@@ -106,7 +92,10 @@ export class PeerToPeerWebSocketServerImpl implements PeerToPeerWebSocketServer 
   }
 
   public getPeers(): Peer[] {
-    return this.peers.map((s: any) => ({ address: s._socket.remoteAddress, port: s._socket.remotePort }));
+    return this.peers.map((s: any) => ({
+      address: s._socket.remoteAddress,
+      port: s._socket.remotePort,
+    }));
   }
 
   public addPeer(connectionString: string): void {

@@ -1,4 +1,4 @@
-import { BlockDto } from './blockDto.js';
+import { BlockDto } from './blockDTO.js';
 
 export interface FindBlocksFromBlockchainResponseOkBody {
   data: BlockDto[];
