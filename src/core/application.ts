@@ -1,41 +1,58 @@
 import { fastify } from 'fastify';
 
+import { config } from './config.js';
+import { PeerToPeerServer } from './peerToPeerServer.js';
+import { AddBlockToBlockchainAction } from '../actions/addBlockToBlockchainAction/addBlockToBlockchainAction.js';
+import { CreateBlockchainAction } from '../actions/createBlockchainAction/createBlockchainAction.js';
+import { FindBlocksFromBlockchainAction } from '../actions/findBlocksFromBlockchainAction/findBlocksFromBlockchainAction.js';
+import { LoggerServiceFactory } from '../common/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
+import { HttpController } from '../controllers/httpController/httpController.js';
+import { WebSocketController } from '../controllers/webSocketController/webSocketController.js';
+import { BlockchainRepository } from '../domain/repositories/blockchainRepository/blockchainRepository.js';
+import { GenesisBlockService } from '../domain/services/genesisBlockService/genesisBlockService.js';
+
 export class Application {
   public static async start(): Promise<void> {
     const server = fastify();
 
-    const httpRouter = new HttpRouter(server, container);
+    const { httpPort, p2pPort, genesisBlock, logLevel } = config;
 
-    httpRouter.registerAllRoutes();
+    const genesisBlockService = new GenesisBlockService({ genesisBlock });
 
-    const webSocketController = container.get<WebSocketController>(blockchainModuleSymbols.webSocketController);
+    const blockRepository = new BlockchainRepository(genesisBlockService);
 
-    webSocketController.handleConnection.bind(webSocketController);
+    const loggerService = LoggerServiceFactory.create({ logLevel });
 
-    webSocketController.handleMessage.bind(webSocketController);
+    const createBlockchainAction = new CreateBlockchainAction(blockRepository, genesisBlockService, loggerService);
 
-    const peerToPeerServer = new PeerToPeerServerImpl(
-      container,
-      webSocketController.handleConnection,
-      webSocketController.handleMessage,
+    const addBlockToBlockchainAction = new AddBlockToBlockchainAction(
+      blockRepository,
+      genesisBlockService,
+      loggerService,
     );
 
-    await peerToPeerServer.start(peerToPeerPort);
+    const findBlocksFromBlockchainAction = new FindBlocksFromBlockchainAction(blockRepository, loggerService);
 
-    server.get('/peers', (_req, res) => {
-      res.send(peerToPeerServer.getPeers());
+    const websocketController = new WebSocketController(findBlocksFromBlockchainAction);
+
+    const peerToPeerServer = new PeerToPeerServer(websocketController, loggerService, { port: p2pPort });
+
+    const httpController = new HttpController(
+      createBlockchainAction,
+      addBlockToBlockchainAction,
+      findBlocksFromBlockchainAction,
+      peerToPeerServer,
+    );
+
+    httpController.registerRoutes(server);
+
+    await peerToPeerServer.start();
+
+    await server.listen({ port: httpPort });
+
+    loggerService.info({
+      message: 'Http server started.',
+      port: httpPort,
     });
-
-    server.post('/peers', (req, res) => {
-      const requestBody = req.body as { peer: string };
-
-      peerToPeerServer.addPeer(requestBody.peer);
-
-      res.send();
-    });
-
-    await server.listen({ host: httpServerHost, port: httpServerPort });
-
-    loggerService.log({ message: `Server started.`, context: { httpServerHost, httpServerPort } });
   }
 }

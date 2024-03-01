@@ -1,5 +1,14 @@
-import { Injectable } from '../../../../libs/dependencyInjection/decorators.js';
 import { Block } from '../../entities/block/block.js';
+
+export interface GenesisBlockServiceConfig {
+  readonly genesisBlock: {
+    readonly index: number;
+    readonly hash: string;
+    readonly previousHash: string;
+    readonly timestamp: number;
+    readonly data: string;
+  };
+}
 
 export interface CheckIfBlockIsGenesisBlockPayload {
   readonly index: number;
@@ -9,29 +18,25 @@ export interface CheckIfBlockIsGenesisBlockPayload {
   readonly data: string;
 }
 
-@Injectable()
 export class GenesisBlockService {
-  private readonly genesisBlockData = {
-    index: 0,
-    hash: '816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7',
-    previousHash: '0000000000000000000000000000000000000000000000000000000000000000',
-    timestamp: 1465154705,
-    data: 'Genesis block',
-  };
+  public constructor(private readonly config: GenesisBlockServiceConfig) {}
 
   public createGenesisBlock(): Block {
-    return Block.createBlock({ genesisBlockService: this, ...this.genesisBlockData });
+    return Block.createBlock({
+      genesisBlockService: this,
+      ...this.config.genesisBlock,
+    });
   }
 
   public checkIfBlockIsGenesisBlock(payload: CheckIfBlockIsGenesisBlockPayload): boolean {
     const { index, hash, previousHash, timestamp, data } = payload;
 
     return (
-      index === this.genesisBlockData.index &&
-      hash === this.genesisBlockData.hash &&
-      previousHash === this.genesisBlockData.previousHash &&
-      timestamp === this.genesisBlockData.timestamp &&
-      data === this.genesisBlockData.data
+      index === this.config.genesisBlock.index &&
+      hash === this.config.genesisBlock.hash &&
+      previousHash === this.config.genesisBlock.previousHash &&
+      timestamp === this.config.genesisBlock.timestamp &&
+      data === this.config.genesisBlock.data
     );
   }
 }

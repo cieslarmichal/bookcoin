@@ -3,6 +3,7 @@ import { WebSocket, WebSocketServer as WsWebSocketServer } from 'ws';
 
 import { type LoggerService } from '../common/logger/services/loggerService/loggerService.js';
 import { type ApplicationMessage } from '../common/types/applicationMessage.js';
+import { type WebSocketController } from '../controllers/webSocketController/webSocketController.js';
 
 export interface Peer {
   readonly address: string;
@@ -10,23 +11,25 @@ export interface Peer {
 }
 
 export interface BroadcastToAllPeersPayload {
-  message: ApplicationMessage<unknown>;
+  readonly message: ApplicationMessage<unknown>;
 }
 
-export class PeerToPeerWebSocketServer {
-  private wsInstance: WsWebSocketServer | null;
+export interface PeerToPeerServerConfig {
+  readonly port: number;
+}
+
+export class PeerToPeerServer {
+  private wsInstance: WsWebSocketServer | null = null;
   private peers: WebSocket[] = [];
 
   public constructor(
+    private readonly websocketController: WebSocketController,
     private readonly loggerService: LoggerService,
-    private readonly connectionHandler: (webSocket: WebSocket) => void,
-    private readonly messageHandler: (webSocket: WebSocket, message: ApplicationMessage<any>) => Promise<void>,
-  ) {
-    this.wsInstance = null;
-  }
+    private readonly config: PeerToPeerServerConfig,
+  ) {}
 
-  public async start(port: number): Promise<void> {
-    const wsInstance = new WsWebSocketServer({ port });
+  public async start(): Promise<void> {
+    const wsInstance = new WsWebSocketServer({ port: this.config.port });
 
     this.wsInstance = wsInstance;
 
@@ -35,18 +38,21 @@ export class PeerToPeerWebSocketServer {
     });
 
     wsInstance.on('error', (error) => {
-      console.error('connection failed: ', error);
+      this.loggerService.error({
+        message: 'Websocket connection failed.',
+        error,
+      });
     });
 
     this.loggerService.info({
-      message: `WebSocket server started.`,
-      port,
+      message: 'WebSocket server started.',
+      port: this.config.port,
     });
   }
 
   private initializeConnection(ws: WebSocket): void {
     this.loggerService.debug({
-      message: 'Connected to peer.',
+      message: 'Connected to a peer.',
       remoteAddress: (ws as any)._socket.remoteAddress,
       remotePort: (ws as any)._socket.remotePort,
     });
@@ -54,14 +60,14 @@ export class PeerToPeerWebSocketServer {
     this.peers.push(ws);
 
     ws.on('message', async (data: string) => {
-      await this.messageHandler(ws, JSON.parse(data));
+      await this.websocketController.handleMessage(ws, JSON.parse(data));
     });
 
     ws.on('close', () => this.closeConnection(ws));
 
     ws.on('error', (error) => this.closeConnection(ws, error));
 
-    this.connectionHandler(ws);
+    this.websocketController.handleConnection(ws);
   }
 
   private closeConnection(ws: WebSocket, error?: Error): void {
@@ -110,7 +116,10 @@ export class PeerToPeerWebSocketServer {
     });
 
     ws.on('error', (error) => {
-      console.log('connection failed: ', error);
+      this.loggerService.error({
+        message: 'Websocket connection failed.',
+        error,
+      });
     });
   }
 }

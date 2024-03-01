@@ -11,13 +11,13 @@ export interface CreateBlockchainActionResult {
 
 export class CreateBlockchainAction {
   public constructor(
-    private readonly blockRepository: BlockchainRepository,
+    private readonly blockchainRepository: BlockchainRepository,
     private readonly genesisBlockService: GenesisBlockService,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(): Promise<CreateBlockchainActionResult> {
-    const existingBlockchain = await this.blockRepository.findBlockchain();
+    const existingBlockchain = await this.blockchainRepository.findBlockchain();
 
     if (existingBlockchain) {
       throw new ResourceAlreadyExistsError({
@@ -34,7 +34,7 @@ export class CreateBlockchainAction {
       blocks: [genesisBlock],
     });
 
-    await this.blockRepository.saveBlockchain({ blockchain });
+    await this.blockchainRepository.saveBlockchain({ blockchain });
 
     this.loggerService.debug({ message: 'Blockchain created.' });
 

@@ -9,14 +9,27 @@ import { type AddBlockToBlockchainAction } from '../../actions/addBlockToBlockch
 import { type CreateBlockchainAction } from '../../actions/createBlockchainAction/createBlockchainAction.js';
 import { type FindBlocksFromBlockchainAction } from '../../actions/findBlocksFromBlockchainAction/findBlocksFromBlockchainAction.js';
 import { HttpStatusCode } from '../../common/http/httpStatusCode.js';
+import { type PeerToPeerServer } from '../../core/peerToPeerServer.js';
 export class HttpController {
   public constructor(
     private readonly createBlockchainAction: CreateBlockchainAction,
     private readonly addBlockToBlockchainAction: AddBlockToBlockchainAction,
     private readonly findBlocksFromBlockchainAction: FindBlocksFromBlockchainAction,
+    private readonly peerToPeerServer: PeerToPeerServer,
   ) {}
 
   public registerRoutes(fastify: FastifyInstance): void {
+    fastify.addHook('onError', (_request, reply, error, done) => {
+      console.error(error);
+
+      reply.code(500).send({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+
+      done();
+    });
+
     fastify.register(async (fastifyInstance) => {
       fastifyInstance.post('/api/blockchain', this.createBlockchain.bind(this));
 
@@ -28,14 +41,14 @@ export class HttpController {
 
       fastifyInstance.get('/api/blockchain/blocks', this.findBlocksFromBlockchain.bind(this));
 
-      fastifyInstance.get('/api//peers', (_req, res) => {
-        res.send(peerToPeerServer.getPeers());
+      fastifyInstance.get('/api/peers', (_req, res) => {
+        res.send(this.peerToPeerServer.getPeers());
       });
 
-      fastifyInstance.post('/api//peers', (req, res) => {
+      fastifyInstance.post('/api/peers', (req, res) => {
         const requestBody = req.body as { peer: string };
 
-        peerToPeerServer.addPeer(requestBody.peer);
+        this.peerToPeerServer.addPeer(requestBody.peer);
 
         res.send();
       });
