@@ -4,22 +4,6 @@ export class Application {
   public static async start(): Promise<void> {
     const server = fastify();
 
-    const logLevel = process.env[EnvKey.logLevel] as LogLevel;
-
-    const httpServerHost = String(process.env[EnvKey.httpServerHost]);
-
-    const httpServerPort = Number(process.env[EnvKey.httpServerPort]);
-
-    const peerToPeerPort = Number(process.env[EnvKey.peerToPeerPort]);
-
-    console.log({
-      httpServerHost,
-      httpServerPort,
-      peerToPeerPort,
-    });
-
-    const container = Application.createContainer();
-
     const httpRouter = new HttpRouter(server, container);
 
     httpRouter.registerAllRoutes();

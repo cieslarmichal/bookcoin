@@ -9,8 +9,8 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "config": "^3.3.9",
     "@sinclair/typebox": "^0.31.26",
+    "config": "^3.3.9",
     "crypto-js": "^4.1.1",
     "fastify": "^4.19.2",
     "http-status-codes": "^2.2.0",
@@ -18,9 +18,10 @@
     "ws": "^8.13.0"
   },
   "devDependencies": {
+    "@types/config": "^3.3.3",
     "@types/crypto-js": "^4.1.1",
-    "@types/ws": "^8.5.5",
     "@types/node": "^20.11.20",
+    "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "esbuild": "^0.20.1",

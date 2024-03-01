@@ -1,0 +1,5 @@
+{
+  "httpPort": "HTTP_PORT",
+  "p2pPort": "P2P_PORT",
+  "logLevel": "LOG_LEVEL"
+}

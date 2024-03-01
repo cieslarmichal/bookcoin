@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { WebSocket, WebSocketServer as WsWebSocketServer } from 'ws';
 
-import { type LoggerService } from './common/logger/services/loggerService/loggerService.js';
-import { type ApplicationMessage } from './common/types/applicationMessage.js';
-import { type Peer } from './peer.js';
+import { type LoggerService } from '../common/logger/services/loggerService/loggerService.js';
+import { type ApplicationMessage } from '../common/types/applicationMessage.js';
+
+export interface Peer {
+  readonly address: string;
+  readonly port: string;
+}
 
 export interface BroadcastToAllPeersPayload {
   message: ApplicationMessage<unknown>;
